@@ -5,8 +5,8 @@ from tkinter import filedialog as fd
 from tkinter import ttk
 
 root = tk.Tk()
-root.geometry("700x500")
-root.title("Toner Report Scanner")
+root.geometry("400x210")
+root.title("PrintVision Report")
 
 def open_file():
     filename = fd.askopenfilename(
@@ -22,6 +22,8 @@ def open_file():
     runBtn.config(state = 'normal' if fileVar != "No file selected" else 'disabled')
 
 def hospital_report():
+    value = hsptlValue.get()
+
     with open('report.csv', 'w', newline = '') as csvfile:
         spamwriter = csv.writer(
             csvfile,
@@ -40,25 +42,25 @@ def hospital_report():
                 k = row[6].replace('"', '')
                 if '%' in k:
                     k = int(k.strip('%'))
-                    if k <= 5:
+                    if k <= value:
                         toner_list.append(f"Black: {k}")
 
                 c = row[7].replace('"', '')
                 if '%' in c:
                     c = int(c.strip('%'))
-                    if c <= 5:
+                    if c <= value:
                         toner_list.append(f"Cyan: {c}")
 
                 m = row[8].replace('"', '')
                 if '%' in m:
                     m = int(m.strip('%'))
-                    if m <= 5:
+                    if m <= value:
                         toner_list.append(f"Magenta: {m}")
 
                 y = row[9].replace('"', '')
                 if '%' in y:
                     y = int(y.strip('%'))
-                    if y <= 5:
+                    if y <= value:
                         toner_list.append(f"Yellow: {y}")
 
                 if len(toner_list) < 1:
@@ -81,25 +83,25 @@ def hospital_report():
                 k = row[6].replace('"', '')
                 if '%' in k:
                     k = int(k.strip('%'))
-                    if k <= 5:
+                    if k <= value:
                         toner_list.append(f"Black: {k}")
 
                 c = row[7].replace('"', '')
                 if '%' in c:
                     c = int(c.strip('%'))
-                    if c <= 5:
+                    if c <= value:
                         toner_list.append(f"Cyan: {c}")
 
                 m = row[8].replace('"', '')
                 if '%' in m:
                     m = int(m.strip('%'))
-                    if m <= 5:
+                    if m <= value:
                         toner_list.append(f"Magenta: {m}")
 
                 y = row[9].replace('"', '')
                 if '%' in y:
                     y = int(y.strip('%'))
-                    if y <= 5:
+                    if y <= value:
                         toner_list.append(f"Yellow: {y}")
 
                 if len(toner_list) < 1:
@@ -117,6 +119,8 @@ def hospital_report():
                     continue
 
 def clinic_report():
+    value = clncValue.get()
+
     with open('report.csv', 'w', newline = '') as csvfile:
         spamwriter = csv.writer(
             csvfile,
@@ -135,25 +139,25 @@ def clinic_report():
                 k = row[6].replace('"', '')
                 if '%' in k:
                     k = int(k.strip('%'))
-                    if k <= 10:
+                    if k <= value:
                         toner_list.append(f"Black: {k}")
 
                 c = row[7].replace('"', '')
                 if '%' in c:
                     c = int(c.strip('%'))
-                    if c <= 10:
+                    if c <= value:
                         toner_list.append(f"Cyan: {c}")
 
                 m = row[8].replace('"', '')
                 if '%' in m:
                     m = int(m.strip('%'))
-                    if m <= 10:
+                    if m <= value:
                         toner_list.append(f"Magenta: {m}")
 
                 y = row[9].replace('"', '')
                 if '%' in y:
                     y = int(y.strip('%'))
-                    if y <= 10:
+                    if y <= value:
                         toner_list.append(f"Yellow: {y}")
 
                 if len(toner_list) < 1:
@@ -189,20 +193,25 @@ def run_report(location):
     statusVar.set("Report complete.")
 
 def create_gui():
-    global filename, fileVar, runBtn, statusVar, valueVar
+    global filename, fileVar, runBtn, statusVar, hsptlValue, clncValue
 
     fileVar = tk.StringVar(value = "No file selected")
     statusVar = tk.StringVar(value = "Ready")
-    valueVar = tk.StringVar(value = '0')
+    hsptlValue = tk.StringVar(value = '0')
+    clncValue = tk.StringVar(value = '0')
 
     # Open Button
-    openBtn = tk.Button(text = "Open File", command = open_file)
-    openBtn.grid(row = 3, column = 2, padx = 10, pady = 10, sticky = 'se')
+    openBtn = tk.Button(root, text = "Open File", command = open_file)
+    openBtn.grid(row = 4, column = 2, padx = 10, pady = 10, sticky = 'se')
 
     # Run Button
-    runBtn = tk.Button(text = "Run", state = 'disabled', command = lambda:run_report(location_dropdown.get()))
-    runBtn.grid(row = 3, column = 3, padx = 10, pady = 10, sticky = 'se')
+    runBtn = tk.Button(root, text = "Run", state = 'disabled', command = lambda:run_report(location_dropdown.get()))
+    runBtn.grid(row = 4, column = 3, padx = 10, pady = 10, sticky = 'se')
 
+    # Input Frame
+    inputFrame = tk.Frame(root)
+    inputFrame.grid(row = 0, column = 0, padx = 10, pady = 10, sticky = 'nwe')
+    
     # Location Select
     location_dropdown = ttk.Combobox(
         state = "readonly",
@@ -216,24 +225,37 @@ def create_gui():
     location_label.grid(row = 0, column = 0, padx = 10, pady = 10, sticky = 'nw')
 
     # Value Select
-    value_entry = ttk.Entry(root, textvariable = valueVar, width = 20)
-    value_entry.grid(row = 1, column = 1, padx = 10, pady = 10, sticky = 'nw')
+    hsptlValue_entry = ttk.Entry(root, textvariable = hsptlValue, width = 23)
+    hsptlValue_entry.grid(row = 1, column = 1, padx = 10, pady = 10, sticky = 'nw')
 
-    value_label = tk.Label(root, text = "Value")
-    value_label.grid(row = 1, column = 0, padx = 10, pady = 10, sticky = 'nw')
+    hsptlValue_label = tk.Label(root, text = "Hospital Value")
+    hsptlValue_label.grid(row = 1, column = 0, padx = 10, pady = 10, sticky = 'nw')
+
+    clncValue_entry = ttk.Entry(root, textvariable = clncValue, width = 23)
+    clncValue_entry.grid(row = 2, column = 1, padx = 10, pady = 10, sticky = 'nw')
+
+    clncValue_label = tk.Label(root, text = "Clinic Value")
+    clncValue_label.grid(row = 2, column = 0, padx = 10, pady = 10, sticky = 'nw')
 
     # File name label
     file_label = tk.Label(root, text = 'File Selected:')
-    file_label.grid(row = 2, column = 0, padx = 10, pady = 10, sticky = 'nw')
+    file_label.grid(row = 3, column = 0, padx = 10, pady = 10, sticky = 'nw')
+
+    fileVarlabel = tk.Label(root, textvariable = fileVar)
+    fileVarlabel.grid(row = 3, column = 1, padx = 10, pady =10, sticky = 'nw')
 
     # Status label
+    stsLabel = tk.Label(root, textvariable = statusVar)
+    stsLabel.grid(row = 4, column = 0, padx = 10, pady = 10, sticky = 'nw')
 
+    #dumbbutton = tk.Button(root, text = 'dumb', command = printy)
+    #dumbbutton.grid(row = 4, column = 1, padx = 10, pady =10, sticky = 'nw')
 
     # File Preview
 
 
     root.columnconfigure([0, 1], weight = 1)
-    root.rowconfigure(1, weight = 1)
+    #root.rowconfigure([1, 0], weight = 1)
 
 if __name__ == '__main__':
     create_gui()
