@@ -1,3 +1,4 @@
+# PrintVision Report by Ethan Wiens
 import csv
 import os.path
 import tkinter as tk
@@ -22,7 +23,7 @@ def open_file():
     runBtn.config(state = 'normal' if fileVar != "No file selected" else 'disabled')
 
 def hospital_report():
-    value = hsptlValue.get()
+    value = int(hsptlValue.get())
 
     with open('report.csv', 'w', newline = '') as csvfile:
         spamwriter = csv.writer(
@@ -34,7 +35,7 @@ def hospital_report():
 
     with open(filename, newline = '') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-        
+
         for row in spamreader:
             if '10.200' in row[2]:
                 toner_list = []
@@ -119,7 +120,7 @@ def hospital_report():
                     continue
 
 def clinic_report():
-    value = clncValue.get()
+    value = int(clncValue.get())
 
     with open('report.csv', 'w', newline = '') as csvfile:
         spamwriter = csv.writer(
@@ -131,7 +132,7 @@ def clinic_report():
 
     with open(filename, newline = '') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-        
+
         for row in spamreader:
             if '10.210' in row[2]:
                 toner_list = []
@@ -211,7 +212,7 @@ def create_gui():
     # Input Frame
     inputFrame = tk.Frame(root)
     inputFrame.grid(row = 0, column = 0, padx = 10, pady = 10, sticky = 'nwe')
-    
+
     # Location Select
     location_dropdown = ttk.Combobox(
         state = "readonly",
