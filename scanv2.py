@@ -33,7 +33,7 @@ def open_file():
 def hospital_report():
     value = int(hsptlValue.get())
 
-    with open('report.csv', 'w', newline = '') as csvfile:
+    with open('report.csv', 'a', newline = '') as csvfile:
         spamwriter = csv.writer(
             csvfile,
             delimiter = ',',
@@ -83,7 +83,8 @@ def hospital_report():
                         quoting = csv.QUOTE_MINIMAL,
                     )
 
-                    spamwriter.writerow(['Main Campus', row[0], row[2], row[3], row[4], toner_list])
+                    toners = ''
+                    spamwriter.writerow(['Main Campus', row[0], row[2], row[3], row[4], toners.join(toner_list)])
                     continue
 
             elif '10.205' in row[2]:
@@ -124,13 +125,14 @@ def hospital_report():
                         quoting = csv.QUOTE_MINIMAL,
                     )
 
-                    spamwriter.writerow(['Main Campus', row[0], row[2], row[3], row[4], toner_list])
+                    toners = ''
+                    spamwriter.writerow(['Main Campus', row[0], row[2], row[3], row[4], toners.join(toner_list)])
                     continue
 
 def clinic_report():
     value = int(clncValue.get())
 
-    with open('report.csv', 'w', newline = '') as csvfile:
+    with open('report.csv', 'a', newline = '') as csvfile:
         spamwriter = csv.writer(
             csvfile,
             delimiter = ',',
@@ -180,7 +182,8 @@ def clinic_report():
                         quoting = csv.QUOTE_MINIMAL,
                     )
 
-                    spamwriter.writerow(['Clinic', row[0], row[2], row[3], row[4], toner_list])
+                    toners = ''
+                    spamwriter.writerow(['Clinic', row[0], row[2], row[3], row[4], toners.join(toner_list)])
                     continue
 
 def run_report(location):
@@ -234,7 +237,7 @@ def create_gui():
 
     # Input Frame
     inputFrame = tk.Frame(root)
-    inputFrame['borderwidth'] = 5
+    inputFrame['borderwidth'] = 2
     inputFrame['relief'] = 'groove'
     inputFrame.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 10, sticky = 'nwe')
 
