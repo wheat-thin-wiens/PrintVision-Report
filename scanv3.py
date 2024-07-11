@@ -129,7 +129,9 @@ def run_report(location):
     else:
         os.remove("C:/Users/Public/report.csv")
 
-    #messagebox.askyesno("Report Complete", "Would you like to view the report?")
+    view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
+    if view:
+        os.system(f"start excel.exe {outLocation}/report.csv")
 
 def notadumbass():
     if btnchck.get() == 1:
@@ -159,11 +161,21 @@ def create_gui():
 
     frame1 = ttk.Frame(tabs, width = 400, height = 280)
     frame2 = ttk.Frame(tabs, width = 400, height = 280)
+    frame3 = ttk.Frame(tabs, width = 400, height = 280)
     frame1.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'n')
     frame2.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'n')
-    
+    frame3.grid(row = 0, column = 2, padx = 10, pady = 5, sticky = 'n')
     tabs.add(frame1, text = "Report")
     tabs.add(frame2, text = "Configure")
+    tabs.add(frame3, text = 'Info')
+
+    #canvas = tk.Canvas(frame2, width = 400, height = 280)
+    #canvas.grid(row = 0, column = 0)
+    #scrollbar = ttk.Scrollbar(frame2, orient = 'vertical', command = canvas.yview)
+    #scrollbar.grid(row = 0, column = 2, rowspan = 10, sticky = 'e')
+    #canvas.config(yscrollcommand=scrollbar.set, scrollregion=(0,0,100,100))
+    #frame = tk.Frame(canvas, bg='white', width=200, height=100)
+    #canvas.create_window(100, 500, window=frame)
     
     # Report Tab
     global fileVar, runBtn, statusVar, hsptlValue, clncValue, outVar
@@ -175,15 +187,15 @@ def create_gui():
     outVar = tk.StringVar(value = 'No destination selected')
 
     openBtn = tk.Button(frame1, text = "Open File", command = open_file)
-    openBtn.grid(row = 5, column = 3, padx = 10, pady = 5, sticky = 'se')
+    openBtn.grid(row = 5, column = 3, padx = 10, pady = 10, sticky = 'se')
 
     runBtn = tk.Button(frame1, text = "Run", state = 'disabled', command = lambda:run_report(location_dropdown.get()))
-    runBtn.grid(row = 5, column = 4, padx = 10, pady = 5, sticky = 'se')
+    runBtn.grid(row = 5, column = 4, padx = 10, pady = 10, sticky = 'se')
 
     inputFrame = tk.Frame(frame1)
     inputFrame['borderwidth'] = 2
     inputFrame['relief'] = 'groove'
-    inputFrame.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'nwe')
+    inputFrame.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 10, sticky = 'nwe')
 
     location_dropdown = ttk.Combobox(
         inputFrame,
@@ -192,37 +204,37 @@ def create_gui():
         width = 20,
     )
     location_dropdown.current(0)
-    location_dropdown.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'nw')
+    location_dropdown.grid(row = 0, column = 1, padx = 10, pady = 10, sticky = 'nw')
 
     location_label = tk.Label(inputFrame, text = "Location:")
-    location_label.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'nw')
+    location_label.grid(row = 0, column = 0, padx = 10, pady = 10, sticky = 'nw')
 
     hsptlValue_entry = ttk.Entry(inputFrame, textvariable = hsptlValue, width = 23)
-    hsptlValue_entry.grid(row = 1, column = 1, padx = 10, pady = 5, sticky = 'nw')
+    hsptlValue_entry.grid(row = 1, column = 1, padx = 10, pady = 10, sticky = 'nw')
 
     hsptlValue_label = tk.Label(inputFrame, text = "Hospital Value:")
-    hsptlValue_label.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')
+    hsptlValue_label.grid(row = 1, column = 0, padx = 10, pady = 10, sticky = 'nw')
 
     clncValue_entry = ttk.Entry(inputFrame, textvariable = clncValue, width = 23)
-    clncValue_entry.grid(row = 2, column = 1, padx = 10, pady = 5, sticky = 'nw')
+    clncValue_entry.grid(row = 2, column = 1, padx = 10, pady = 10, sticky = 'nw')
 
     clncValue_label = tk.Label(inputFrame, text = "Clinic Value:")
-    clncValue_label.grid(row = 2, column = 0, padx = 10, pady = 5, sticky = 'nw')
+    clncValue_label.grid(row = 2, column = 0, padx = 10, pady = 10, sticky = 'nw')
 
     file_label = tk.Label(inputFrame, text = 'File Selected:')
-    file_label.grid(row = 3, column = 0, padx = 10, pady = 5, sticky = 'nw')
+    file_label.grid(row = 3, column = 0, padx = 10, pady = 10, sticky = 'nw')
 
     fileVarlabel = tk.Label(inputFrame, textvariable = fileVar, width = 23, anchor = 'w')
-    fileVarlabel.grid(row = 3, column = 1, padx = 10, pady =5, sticky = 'nw')
+    fileVarlabel.grid(row = 3, column = 1, padx = 10, pady = 10, sticky = 'nw')
 
     output_label = tk.Label(inputFrame, text = "Output Destination:")
-    output_label.grid(row = 4, column = 0, padx = 10, pady = 5, sticky = 'nw')
+    output_label.grid(row = 4, column = 0, padx = 10, pady = 10, sticky = 'nw')
 
     destination_label = tk.Label(inputFrame, textvariable = outVar, width = 23, anchor = 'w')
-    destination_label.grid(row = 4, column = 1, padx = 10, pady = 5, sticky = 'nw')
+    destination_label.grid(row = 4, column = 1, padx = 10, pady = 10, sticky = 'nw')
 
     stsLabel = tk.Label(frame1, textvariable = statusVar, anchor = 'w')
-    stsLabel.grid(row = 5, column = 0, padx = 10, pady = 5, sticky = 'nw')
+    stsLabel.grid(row = 5, column = 0, padx = 10, pady = 10, sticky = 'nw')
 
     #dumbbutton = tk.Button(root, text = 'dumb', command = printy)
     #dumbbutton.grid(row = 4, column = 1, padx = 10, pady = 5, sticky = 'nw')
@@ -286,9 +298,11 @@ def create_gui():
     dumbass_check = tk.Checkbutton(frame2, text = "I know what I'm doing", variable = btnchck, onvalue = 1, offvalue = 0, command = notadumbass)
     dumbass_check.grid(row = 8, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
-    #scrollbar = ttk.Scrollbar(frame2, orient = 'vertical', command = frame2.yview)
-    #scrollbar.grid(row = 0, column = 2, sticky = 'e')
-    #frame2['yscrollcommand'] = scrollbar.set
+    # Info Tab
+    info_text = tk.Label(frame3, text = 'Intended for use with PrintVision toner reports.')
+    info_text.grid(row = 0, column = 0)
+    copyright = tk.Label(frame3, text = '© 2024 - Ethan Wiens - All Rights Reserved', anchor = 'w')
+    copyright.grid(row = 1, column = 0)
 
     root.columnconfigure([0, 1], weight = 1)
     #root.rowconfigure([1, 0], weight = 1)
