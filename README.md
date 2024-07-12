@@ -1,6 +1,6 @@
 # PrintVision Report Parser
 
-This appication exists to automatically parse PrintVision low toner reports so that a person does not have to spend their time sifting through it themselves. It seeks to solve the problem where all printers must be set to notify us when a toner gets below 10%. This works just fine for the clinic printers, but we do not change toners for on site printers until they go below 5%. Using this tool, the user is given more control over which printers they see and at which toner level. This application is written in Python using the tkinter GUI framework.
+This program solves a number of problems with the way we handle PrintVision toner low reports. Firstly, the report is set to include both hospital and clinic printers that have toner levels below 10%, even though we change them at 5% if they're on site. This program allows the user to set different toner thresholds for on site and off site printers. Second, it dramatically decreases the time it takes to parse through the report. The report on PrintVision is visually busy and difficult to parse, whereas this program only gives the most important information: the model, asset number, location, IP address and which toners are low, and delivers it in a visually simple way. This program was written in Python using the tkinter GUI framework.
 
 ## Core Functionality
 
@@ -20,3 +20,21 @@ Using the application:
 ## Code Documentation
 
 Given the way PrintVision generates its reports, much careful attention has been given to the way this program parses strings. The main function of the program, called `def report(location, IP, value)` in the code, takes the columns where the toner levels are stored and strips it down to just the number so that it may be converted to an integer. It takes the arguments `(location, IP, value)` so that the function does not have to be written multiple times. Originally it was written multiple times, with the IP addresses for the printers in the hosipital and clinics hard coded directly in the function, but I got sick of scrolling so much in the code. Now, when the user selects the Run button, another function, called `def run_report(location)` passes in the appropriate arguments based on the user's input. When the Run button is selected, it passes the value of the location dropdown menu to the `def run_report(location)` function, where the values from the hospital and clinic entry widgets as well as the corresponding IP addresses are passed to the `def report(location, IP, value)` function.
+
+## Version Tracking
+
+v0.1.0
+
+- Basic functionality
+  
+v0.2.0
+
+- Added more UI elements
+- Added user input to specify report generated
+  
+v0.3.0
+
+- Cleaned up code for basic functionality
+- Added more UI elements
+- Added functionality for configuring the way the program parses the PrintVision Report
+- Added options for user to view report after it has been generated
