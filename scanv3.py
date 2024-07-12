@@ -1,4 +1,4 @@
-# PrintVision Report by Ethan Wiens
+# PrintVision Report Parser by Ethan Wiens
 import csv
 import os
 import os.path
@@ -200,7 +200,7 @@ def create_gui():
     location_dropdown = ttk.Combobox(
         inputFrame,
         state = "readonly",
-        values = ['', 'Hospital', 'Clinics', 'All'],
+        values = ['All', 'Hospital', 'Clinics'],
         width = 20,
     )
     location_dropdown.current(0)
