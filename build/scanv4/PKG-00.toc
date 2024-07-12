@@ -1,5 +1,6 @@
 ('C:\\Users\\H93793\\OneDrive - Hennepin '
- 'Healthcare\\Documents\\dev\\PrintVision Report\\build\\scanv4\\scanv4.pkg',
+ 'Healthcare\\Documents\\dev\\PrintVision Report\\build\\scanv4\\PrintVision '
+ 'Report Parser.pkg',
  {'BINARY': True,
   'DATA': True,
   'EXECUTABLE': True,

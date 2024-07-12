@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='scanv4',
+    name='PrintVision Report Parser',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

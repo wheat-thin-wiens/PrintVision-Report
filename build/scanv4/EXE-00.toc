@@ -1,5 +1,6 @@
 ('C:\\Users\\H93793\\OneDrive - Hennepin '
- 'Healthcare\\Documents\\dev\\PrintVision Report\\dist\\scanv4.exe',
+ 'Healthcare\\Documents\\dev\\PrintVision Report\\dist\\PrintVision Report '
+ 'Parser.exe',
  False,
  False,
  False,
@@ -32,7 +33,8 @@
  None,
  None,
  'C:\\Users\\H93793\\OneDrive - Hennepin '
- 'Healthcare\\Documents\\dev\\PrintVision Report\\build\\scanv4\\scanv4.pkg',
+ 'Healthcare\\Documents\\dev\\PrintVision Report\\build\\scanv4\\PrintVision '
+ 'Report Parser.pkg',
  [('pyi-contents-directory _internal', '', 'OPTION'),
   ('PYZ-00.pyz',
    'C:\\Users\\H93793\\OneDrive - Hennepin '
@@ -2905,7 +2907,7 @@
  [],
  False,
  False,
- 1720801167,
+ 1720802217,
  [('runw.exe',
    'C:\\Users\\H93793\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\runw.exe',
    'EXECUTABLE')],
