@@ -8,10 +8,19 @@ from tkinter import messagebox
 from tkinter import filedialog as fd
 from tkinter import ttk
 
+basedir = os.path.dirname(__file__)
+
+try:
+    from ctypes import windll
+    myappid = "mycompany.myproduct.subproduct.version"
+    windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+except ImportError:
+    pass
+
 root = tk.Tk()
 root.geometry("500x325")
 root.title("PrintVision Report")
-#root.iconbitmap('printing.ico')
+root.iconbitmap(os.path.join(basedir, 'printing.ico'))
 
 def open_file():
     global filename
