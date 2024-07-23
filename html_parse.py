@@ -1,6 +1,9 @@
 from bs4 import BeautifulSoup
 import creds
+import html
+import lxml
 import os
+from playwright.sync_api import sync_playwright
 import requests
 import time
 import tkinter as tk
@@ -19,16 +22,40 @@ def login():
     user = username.get()
     passw = password.get()
 
-    payload = {
-        'txtUserName' : user,
-        'txtPassword' : passw
-    }
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless = False, )
+        page = browser.new_page()
+        page.goto(pv_login)
+        page.fill('input#txtUserName', user)
+        page.fill('input#txtPassword', passw)
+        page.click('input#cmdLogin')
 
-    with requests.session() as s:
-        s.post(pv_login, data = payload)
-        r = s.get(report_url)
-        soup = BeautifulSoup(r.content, 'html.parser')
-        print(soup.prettify())
+        page.goto(report_url)
+        dropdown = 'id=ContentPlaceHolder1_runParameters_groupList_button'
+        dropdown_btn = 'id=ContentPlaceHolder1_runParameters_groupList_button'
+        page.get_by_role("img", name="@").click()
+        page.get_by_role("link", name="HCMC (1373)").click()
+        page.click('#run')
+        page.is_visible('div.mast_reporting')
+
+        report = page.inner_html('#content')
+        print(report)
+        
+        #report = page.inner_html('div.pfReport')
+        soup = BeautifulSoup(report, 'lxml')
+        #print(soup)
+
+
+    #payload = {
+    #    'txtUserName' : user,
+    #    'txtPassword' : passw
+    #}
+
+    #with requests.session() as s:
+    #    s.post(pv_login, data = payload)
+    #    r = s.get(report_url)
+    #    soup = BeautifulSoup(r.content, 'html.parser')
+    #    print(soup.prettify())
     
     #soup = BeautifulSoup(response.content, 'html.parser')
     #protected_content = soup.find()
@@ -112,3 +139,5 @@ def create_gui():
 if __name__ == '__main__':
     create_gui()
     root.mainloop()
+
+
