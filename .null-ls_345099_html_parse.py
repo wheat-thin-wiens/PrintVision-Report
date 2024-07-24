@@ -1,10 +1,9 @@
 from bs4 import BeautifulSoup
 import creds
-import csv
 import html
 import lxml
 import os
-from playwright.sync_api import sync_playwright, expect
+from playwright.sync_api import sync_playwright
 import requests
 import time
 import tkinter as tk
@@ -24,7 +23,7 @@ def login():
     passw = password.get()
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless = True, )
+        browser = p.chromium.launch(headless = False, )
         page = browser.new_page()
         page.goto(pv_login)
         page.fill('input#txtUserName', user)
@@ -37,12 +36,16 @@ def login():
         page.get_by_role("img", name="@").click()
         page.get_by_role("link", name="HCMC (1373)").click()
         page.click('#run')
-        page.wait_for_selector('.pfReport')
+        page.is_visible('div.mast_reporting')
+
         report = page.inner_html('#content')
-        soup = BeautifulSoup(report, 'lxml')
+        print(report)
         
-    begin_report(soup)
-    
+        #report = page.inner_html('div.pfReport')
+        soup = BeautifulSoup(report, 'lxml')
+        #print(soup)
+
+
     #payload = {
     #    'txtUserName' : user,
     #    'txtPassword' : passw
@@ -62,85 +65,8 @@ def login():
 
     runBtn.config(state = 'normal')
 
-def begin_report(soup):
-    hValue = int(hsptlValue.get())
-    cValue = int(clncValue.get())
-    location = location_dropdown.get()
-
-    #os.chdir('C:/Users/Public')
-    os.chdir('/Users/ethanwiens/Downloads')
-
-    if os.path.isfile('report.csv'):
-        os.remove('report.csv')
-        open('report.csv', 'x')
-        print('file created')
-
-    with open('report.csv', 'w', newline = '') as csvfile:
-        spamwriter = csv.writer(
-            csvfile,
-            delimiter = ',',
-            quotechar = '|',
-            quoting = csv.QUOTE_MINIMAL,
-        )
-
-        columns = []
-        head = soup.find('thead')
-        for x in head.find_all('th'):
-            columns.append(x.text)
-
-        spamwriter.writerow(columns)
-
-    if location == 'All':
-        html_report(soup, ['10.200', '10.205'], hValue)
-        html_report(soup, ['10.210'], cValue)
-    elif location == 'Hospital':
-        html_report(soup, ['10.200', '10.205'], hValue)
-    elif location == 'Clinic':
-        html_report(soup, ['10.210'], cValue)
-
-def html_report(soup, IP_list, value):
-    #os.chdir('C:/Users/Public')
-    os.chdir('/Users/ethanwiens/Downloads')
-
-    if os.path.isfile('report.csv'):
-        os.remove('report.csv')
-        open('report.csv', 'x')
-        print('file created')
-
-    with open('report.csv', 'a', newline = '') as csvfile:
-        spamwriter = csv.writer(
-            csvfile,
-            delimiter = ',',
-            quotechar = '|',
-            quoting = csv.QUOTE_MINIMAL,
-        )
-
-        columns = []
-        head = soup.find('thead')
-        for x in head.find_all('th'):
-            columns.append(x.text)
-    
-        #spamwriter.writerow(columns)
-
-        body = soup.find('tbody')
-        for x in body.find_all('tr'):
-            rows = x.find_all('td')
-            printer = []
-            dick = {}
-            for y in rows:
-                beep = y.text.strip('\n')
-                beep = beep.strip('\xa0\n')
-                printer.append(beep)
-            spamwriter.writerow(printer)
-            for a, b in zip(columns, printer):
-                if len(b) == 0:
-                    pass
-                else:
-                    dick.update({a: b})
-                    print(dick)
-
 def create_gui():
-    global hsptlValue, clncValue, statusVar, runBtn, location_dropdown
+    global hsptlValue, clncValue, statusVar, runBtn
 
     statusVar = tk.StringVar(value = "Ready")
     hsptlValue = tk.StringVar(value = '5')
