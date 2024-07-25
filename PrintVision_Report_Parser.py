@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import filedialog as fd, messagebox, ttk
 
 root = tk.Tk()
-root.geometry("500x325")
+root.geometry("365x325")
 root.title("PrintVision Report")
 #root.iconbitmap('printing.ico')
 
@@ -93,6 +93,8 @@ def html_report(soup, IP_list):
                     boop = beep.split('\n')
                     list.append(boop[0])
                 
+                crnt_ip = list[2]
+                
                 if ip in list[2]:
                     toners = []
                     try:
@@ -146,16 +148,24 @@ def html_report(soup, IP_list):
                 else:
                     continue
 
-    outLocation = fd.askdirectory(
+    saved = False
+    while not saved:
+        try:
+            outLocation = fd.askdirectory(
             title = "Save new report",
             initialdir = "/"
         )
-
-    if len(outLocation) > 0:
-        os.replace('C:/Users/Public/report.csv', f"{outLocation}/report.csv")
-    else:
-        os.remove("C:/Users/Public/report.csv")
-
+            
+            if len(outLocation) > 0:
+                os.replace('C:/Users/Public/report.csv', f"{outLocation}/report.csv")
+            else:
+                os.remove("C:/Users/Public/report.csv")
+            saved = True
+        except PermissionError:
+            file_error = messagebox.showwarning("Unable to save", "If a previous report is still open, make sure you close it before running another report.")
+            #htmlstatusVar.set('Run Report')
+            continue
+    
     view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
     if view:
         os.system(f"start excel.exe {outLocation}/report.csv")
@@ -391,16 +401,16 @@ def create_gui():
     clncValue = tk.StringVar(value = '10')
     outVar = tk.StringVar(value = 'No destination selected')
 
-    openBtn = tk.Button(frame1, text = "Open File", command = open_file)
-    openBtn.grid(row = 5, column = 3, padx = 10, pady = 10, sticky = 'se')
+    openBtn = ttk.Button(frame1, text = "Open File", width = 15, command = open_file)
+    openBtn.grid(row = 5, column = 0, padx = 10, pady = 5, sticky = 'se')
 
-    runBtn = tk.Button(frame1, text = "Run", state = 'disabled', command = lambda:run_report(location_dropdown.get()))
-    runBtn.grid(row = 5, column = 4, padx = 10, pady = 10, sticky = 'se')
+    runBtn = ttk.Button(frame1, text = "Run", state = 'disabled', width = 15, command = lambda:run_report(location_dropdown.get()))
+    runBtn.grid(row = 5, column = 1, padx = 10, pady = 5, sticky = 'se')
 
-    inputFrame = tk.Frame(frame1)
+    inputFrame = ttk.LabelFrame(frame1, text = "Report Settings")
     inputFrame['borderwidth'] = 2
     inputFrame['relief'] = 'groove'
-    inputFrame.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 10, sticky = 'nwe')
+    inputFrame.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'nwe')
 
     location_dropdown = ttk.Combobox(
         inputFrame,
@@ -409,28 +419,28 @@ def create_gui():
         width = 20,
     )
     location_dropdown.current(0)
-    location_dropdown.grid(row = 0, column = 1, padx = 10, pady = 10, sticky = 'nw')
+    location_dropdown.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'nw')
 
     location_label = tk.Label(inputFrame, text = "Location:")
-    location_label.grid(row = 0, column = 0, padx = 10, pady = 10, sticky = 'nw')
+    location_label.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
     hsptlValue_entry = ttk.Entry(inputFrame, textvariable = hsptlValue, width = 23)
-    hsptlValue_entry.grid(row = 1, column = 1, padx = 10, pady = 10, sticky = 'nw')
+    hsptlValue_entry.grid(row = 1, column = 1, padx = 10, pady = 5, sticky = 'nw')
 
     hsptlValue_label = tk.Label(inputFrame, text = "Hospital Value:")
-    hsptlValue_label.grid(row = 1, column = 0, padx = 10, pady = 10, sticky = 'nw')
+    hsptlValue_label.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
     clncValue_entry = ttk.Entry(inputFrame, textvariable = clncValue, width = 23)
-    clncValue_entry.grid(row = 2, column = 1, padx = 10, pady = 10, sticky = 'nw')
+    clncValue_entry.grid(row = 2, column = 1, padx = 10, pady = 5, sticky = 'nw')
 
     clncValue_label = tk.Label(inputFrame, text = "Clinic Value:")
-    clncValue_label.grid(row = 2, column = 0, padx = 10, pady = 10, sticky = 'nw')
+    clncValue_label.grid(row = 2, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
     file_label = tk.Label(inputFrame, text = 'File Selected:')
-    file_label.grid(row = 3, column = 0, padx = 10, pady = 10, sticky = 'nw')
+    file_label.grid(row = 3, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
     fileVarlabel = tk.Label(inputFrame, textvariable = fileVar, width = 23, anchor = 'w')
-    fileVarlabel.grid(row = 3, column = 1, padx = 10, pady = 10, sticky = 'nw')
+    fileVarlabel.grid(row = 3, column = 1, padx = 10, pady = 5, sticky = 'nw')
 
     output_label = tk.Label(inputFrame, text = "Output Destination:")
     output_label.grid(row = 4, column = 0, padx = 10, pady = 10, sticky = 'nw')
@@ -438,8 +448,8 @@ def create_gui():
     destination_label = tk.Label(inputFrame, textvariable = outVar, width = 23, anchor = 'w')
     destination_label.grid(row = 4, column = 1, padx = 10, pady = 10, sticky = 'nw')
 
-    stsLabel = tk.Label(frame1, textvariable = statusVar, anchor = 'w')
-    stsLabel.grid(row = 5, column = 0, padx = 10, pady = 10, sticky = 'nw')
+    #stsLabel = tk.Label(frame1, textvariable = statusVar, anchor = 'e')
+    #stsLabel.grid(row = 5, column = 2, padx = 10, pady = 10, sticky = 'nw')
 
     #dumbbutton = tk.Button(root, text = 'dumb', command = printy)
     #dumbbutton.grid(row = 4, column = 1, padx = 10, pady = 5, sticky = 'nw')
