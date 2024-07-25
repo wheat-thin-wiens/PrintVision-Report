@@ -67,40 +67,15 @@ def begin_report(soup):
     cValue = int(clncValue.get())
     location = location_dropdown.get()
 
-    #os.chdir('C:/Users/Public')
-    os.chdir('/Users/ethanwiens/Downloads')
-
-    if os.path.isfile('report.csv'):
-        os.remove('report.csv')
-        open('report.csv', 'x')
-        print('file created')
-
-    with open('report.csv', 'w', newline = '') as csvfile:
-        spamwriter = csv.writer(
-            csvfile,
-            delimiter = ',',
-            quotechar = '|',
-            quoting = csv.QUOTE_MINIMAL,
-        )
-
-        columns = []
-        head = soup.find('thead')
-        for x in head.find_all('th'):
-            columns.append(x.text)
-
-        spamwriter.writerow(columns)
-
     if location == 'All':
-        html_report(soup, ['10.200', '10.205'], hValue)
-        html_report(soup, ['10.210'], cValue)
+        html_report(soup, ['10.200', '10.205', '10.210'], hValue)
     elif location == 'Hospital':
         html_report(soup, ['10.200', '10.205'], hValue)
     elif location == 'Clinic':
         html_report(soup, ['10.210'], cValue)
 
 def html_report(soup, IP_list, value):
-    #os.chdir('C:/Users/Public')
-    os.chdir('/Users/ethanwiens/Downloads')
+    big = []
 
     if os.path.isfile('report.csv'):
         os.remove('report.csv')
@@ -119,8 +94,8 @@ def html_report(soup, IP_list, value):
         head = soup.find('thead')
         for x in head.find_all('th'):
             columns.append(x.text)
-    
-        #spamwriter.writerow(columns)
+
+        spamwriter.writerow(columns)
 
         body = soup.find('tbody')
         for x in body.find_all('tr'):
@@ -132,12 +107,15 @@ def html_report(soup, IP_list, value):
                 beep = beep.strip('\xa0\n')
                 printer.append(beep)
             spamwriter.writerow(printer)
+            big.append(printer)
             for a, b in zip(columns, printer):
                 if len(b) == 0:
                     pass
                 else:
                     dick.update({a: b})
-                    print(dick)
+                    #print(dick)
+
+    return big
 
 def create_gui():
     global hsptlValue, clncValue, statusVar, runBtn, location_dropdown
