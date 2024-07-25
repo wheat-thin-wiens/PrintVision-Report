@@ -252,8 +252,8 @@ def run_report(location):
         open('report.csv', 'x')
         print('file created')
 
-    hValue = int(hsptlValue.get())
-    cValue = int(clncValue.get())
+    hValue = int(html_hsptlValue.get())
+    cValue = int(html_clncValue.get())
 
     if location == 'Hospital':
         report('Main Campus', '10.200', hValue)
