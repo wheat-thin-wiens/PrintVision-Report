@@ -1,18 +1,168 @@
 # PrintVision Report Parser by Ethan Wiens
+from bs4 import BeautifulSoup
+import creds
 import csv
-import os
-import os.path
-import time
+import os, os.path
+from playwright.sync_api import sync_playwright
 import tkinter as tk
-from tkinter import messagebox
-from tkinter import filedialog as fd
-from tkinter import ttk
+from tkinter import filedialog as fd, messagebox, ttk
 
 root = tk.Tk()
 root.geometry("500x325")
 root.title("PrintVision Report")
 #root.iconbitmap('printing.ico')
 
+## HTML Functions
+def login():
+    htmlstatusVar.set('Logging in...')
+
+    pv_login = 'https://loffler.printfleet.com/login.aspx'
+    report_url = 'https://loffler.printfleet.com/reportDetail.aspx?reportId=0afcca2e-f240-4ac3-ae81-438da7176e99'
+    user = username.get()
+    passw = password.get()
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless = True, )
+        page = browser.new_page()
+        page.goto(pv_login)
+        page.fill('input#txtUserName', user)
+        page.fill('input#txtPassword', passw)
+        page.click('input#cmdLogin')
+
+        htmlstatusVar.set('Collecting report...')
+        page.goto(report_url)
+        dropdown = 'id=ContentPlaceHolder1_runParameters_groupList_button'
+        dropdown_btn = 'id=ContentPlaceHolder1_runParameters_groupList_button'
+        page.get_by_role("img", name="@").click()
+        page.get_by_role("link", name="HCMC (1373)").click()
+        page.click('#run')
+        page.wait_for_selector('.pfReport')
+        report = page.inner_html('#content')
+        soup = BeautifulSoup(report, 'lxml')
+        
+    begin_report(soup)
+
+def begin_report(soup):
+    htmlstatusVar.set('Analyzing report...')
+    global hValue, cValue
+    hValue = int(html_hsptlValue.get())
+    cValue = int(html_clncValue.get())
+    location = html_location_dropdown.get()
+
+    if location == 'All':
+        html_report(soup, ['10.200', '10.205', '10.210'])
+    elif location == 'Hospital':
+        html_report(soup, ['10.200', '10.205'])
+    elif location == 'Clinic':
+        html_report(soup, ['10.210'])
+
+def html_report(soup, IP_list):
+    os.chdir('C:/Users/Public')
+    #os.chdir('/Users/ethanwiens/Downloads')
+    
+    if os.path.isfile('report.csv'):
+        os.remove('report.csv')
+        open('report.csv', 'x')
+        print('file created')
+
+    with open('report.csv', 'a', newline = '') as csvfile:
+        spamwriter = csv.writer(
+            csvfile,
+            delimiter = ',',
+            quotechar = '|',
+            quoting = csv.QUOTE_MINIMAL,
+        )
+
+        columns = []
+        head = soup.find('thead')
+        for x in head.find_all('th'):
+            columns.append(x.text)
+        spamwriter.writerow(columns)
+
+        #tbody is the table containing the entire report
+        body = soup.find('tbody')
+        for ip in IP_list:
+            #tr is each row in the report, effectively each printer
+            for x in body.find_all('tr'):
+                #td is each piece of data, or column, for an individual printer
+                rows = x.find_all('td')
+                list = []
+                for y in rows:
+                    beep = y.text.strip('\n')
+                    beep = beep.strip('\xa0\n')
+                    boop = beep.split('\n')
+                    list.append(boop[0])
+                
+                if ip in list[2]:
+                    toners = []
+                    try:
+                        black = list[6].strip('%')
+                        cyan = list[7].strip('%')
+                        magenta = list[8].strip('%')
+                        yellow = list[9].strip('%')
+                        if ip == '10.210':
+                            if int(black) <= cValue:
+                                toners.append(black)
+                            elif int(black) > cValue:
+                                list[6] = ' '
+                            if int(cyan) <= cValue:
+                                toners.append(cyan)
+                            elif int(cyan) > cValue:
+                                list[7] = ' '
+                            if int(magenta) <= cValue:
+                                toners.append(magenta)
+                            elif int(magenta) > cValue:
+                                list[8] = ' '
+                            if int(yellow) <= cValue:
+                                toners.append(yellow)
+                            elif int(yellow) > cValue:
+                                list[9] = ' '
+                        else:
+                            if int(black) <= hValue:
+                                toners.append(black)
+                            elif int(black) > hValue:
+                                list[6] = ' '
+                            if int(cyan) <= hValue:
+                                toners.append(cyan)
+                            elif int(cyan) > hValue:
+                                list[7] = ' '
+                            if int(magenta) <= hValue:
+                                toners.append(magenta)
+                            elif int(magenta) > hValue:
+                                list[8] = ' '
+                            if int(yellow) <= hValue:
+                                toners.append(yellow)
+                            elif int(yellow) > hValue:
+                                list[9] = ' '
+                    except TypeError:
+                        pass
+                    except ValueError:
+                        pass
+
+                    if len(toners) > 0:
+                        spamwriter.writerow(list)
+                        print('row added')
+                
+                else:
+                    continue
+
+    outLocation = fd.askdirectory(
+            title = "Save new report",
+            initialdir = "/"
+        )
+
+    if len(outLocation) > 0:
+        os.replace('C:/Users/Public/report.csv', f"{outLocation}/report.csv")
+    else:
+        os.remove("C:/Users/Public/report.csv")
+
+    view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
+    if view:
+        os.system(f"start excel.exe {outLocation}/report.csv")
+
+    htmlstatusVar.set('Report complete.')
+
+## CSV Functions
 def open_file():
     global filename
     filename = fd.askopenfilename(
@@ -115,7 +265,6 @@ def run_report(location):
         report('Main Campus', '10.205', hValue)
         report('Clinic', '10.210', cValue)
 
-    time.sleep(1)
     statusVar.set("Report complete.")
 
     outLocation = fd.askdirectory(
@@ -162,10 +311,13 @@ def create_gui():
     frame1 = ttk.Frame(tabs, width = 400, height = 280)
     frame2 = ttk.Frame(tabs, width = 400, height = 280)
     frame3 = ttk.Frame(tabs, width = 400, height = 280)
-    frame1.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'n')
-    frame2.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'n')
-    frame3.grid(row = 0, column = 2, padx = 10, pady = 5, sticky = 'n')
-    tabs.add(frame1, text = "Report")
+    frame4 = ttk.Frame(tabs, width = 400, height = 280)
+    frame4.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'n')
+    frame1.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'n')
+    frame2.grid(row = 0, column = 2, padx = 10, pady = 5, sticky = 'n')
+    frame3.grid(row = 0, column = 3, padx = 10, pady = 5, sticky = 'n')
+    tabs.add(frame4, text = 'HTML')
+    tabs.add(frame1, text = "CSV")
     tabs.add(frame2, text = "Configure")
     tabs.add(frame3, text = 'Info')
 
@@ -177,8 +329,61 @@ def create_gui():
     #frame = tk.Frame(canvas, bg='white', width=200, height=100)
     #canvas.create_window(100, 500, window=frame)
     
-    # Report Tab
-    global fileVar, runBtn, statusVar, hsptlValue, clncValue, outVar
+    ## HTML Tab
+    global username, password, htmlstatusVar, html_hsptlValue, html_clncValue, html_location_dropdown
+
+    htmlstatusVar = tk.StringVar(value = "Run Report")
+    html_hsptlValue = tk.StringVar(value = '5')
+    html_clncValue = tk.StringVar(value = '10')
+
+    username = tk.StringVar(value = creds.username)
+    password = tk.StringVar(value = creds.password)
+
+    topframe = ttk.LabelFrame(frame4, text = "Login")
+    topframe.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'new')
+
+    sep = ttk.Separator(frame4, orient = 'horizontal')
+    sep.grid(row = 1, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'nsew')
+
+    botframe = ttk.LabelFrame(frame4, text = 'Report')
+    botframe.grid(row = 2, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'new')
+
+    user_lbl = tk.Label(topframe, text = "User Name:     ")
+    user_lbl.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'nw')
+    user_entry = ttk.Entry(topframe, textvariable = username, width = 23, state = 'normal')
+    user_entry.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'nw')
+
+    pass_lbl = tk.Label(topframe, text = 'Password:')
+    pass_lbl.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')
+    pass_entry = ttk.Entry(topframe, textvariable = password, width = 23, show = '*')
+    pass_entry.grid(row = 1, column = 1, padx = 10, pady = 5, sticky = 'nw')
+
+    html_location_dropdown = ttk.Combobox(
+        botframe, 
+        state = 'readonly', 
+        values = ['All', 'Hospital', 'Clinics'],
+        width = 20,
+    )
+    html_location_dropdown.current(0)
+    html_location_dropdown.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'nw')
+    location_label = tk.Label(botframe, text = 'Location:')
+    location_label.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'nw')
+
+    hsptl_entry = ttk.Entry(botframe, textvariable = html_hsptlValue, width = 23)
+    hsptl_entry.grid(row = 1, column = 1, padx = 10, pady = 5, sticky = 'nw')
+    hsptl_label = tk.Label(botframe, text = 'Hospital Value:')
+    hsptl_label.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')
+
+    clnc_entry = ttk.Entry(botframe, textvariable = html_clncValue, width = 23)
+    clnc_entry.grid(row = 2, column = 1, padx = 10, pady = 5, sticky = 'nw')
+    clnc_label = tk.Label(botframe, text = 'Clinic Value:')
+    clnc_label.grid(row = 2, column = 0, padx = 10, pady = 5, sticky = 'nw')
+
+    report_btn = ttk.Button(frame4, textvariable = htmlstatusVar, command = login, width = 17)
+    report_btn.grid(row = 3, column = 0, padx = 10, pady = 5, sticky = 'nw')
+    
+    ## CSV Tab
+    global fileVar, runBtn, outVar, statusVar
 
     fileVar = tk.StringVar(value = "No file selected")
     statusVar = tk.StringVar(value = "Ready")
@@ -239,7 +444,7 @@ def create_gui():
     #dumbbutton = tk.Button(root, text = 'dumb', command = printy)
     #dumbbutton.grid(row = 4, column = 1, padx = 10, pady = 5, sticky = 'nw')
 
-    # Config Tab
+    ## Config Tab
     global modelCol, ipCol, assetCol, roomCol, kCol, cCol, mCol, yCol
     global modelCol_entry, ipCol_entry, assetCol_entry, roomCol_entry, kCol_entry, cCol_entry, mCol_entry, yCol_entry
     global btnchck
