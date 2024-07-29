@@ -1,11 +1,24 @@
 # PrintVision Report Parser by Ethan Wiens
 from bs4 import BeautifulSoup
-import creds
 import csv
 import os, os.path
 from playwright.sync_api import sync_playwright
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait, Select
+import time
 import tkinter as tk
 from tkinter import filedialog as fd, messagebox, ttk
+from webdriver_manager.chrome import ChromeDriverManager
+
+try:
+    import creds
+except ImportError:
+    pass
 
 root = tk.Tk()
 root.geometry("365x325")
@@ -31,8 +44,6 @@ def login():
 
         htmlstatusVar.set('Collecting report...')
         page.goto(report_url)
-        dropdown = 'id=ContentPlaceHolder1_runParameters_groupList_button'
-        dropdown_btn = 'id=ContentPlaceHolder1_runParameters_groupList_button'
         page.get_by_role("img", name="@").click()
         page.get_by_role("link", name="HCMC (1373)").click()
         page.click('#run')
@@ -41,6 +52,62 @@ def login():
         soup = BeautifulSoup(report, 'lxml')
         
     begin_report(soup)
+
+def logincel():
+    #htmlstatusVar.set('Logging in...')
+
+    pv_login = 'https://loffler.printfleet.com/login.aspx'
+    report_url = 'https://loffler.printfleet.com/reportDetail.aspx?reportId=0afcca2e-f240-4ac3-ae81-438da7176e99'
+    user = username.get()
+    passw = password.get()
+
+    #driver = webdriver.Chrome(service = ChromeService(ChromeDriverManager().install()))
+    driver = webdriver.Chrome()
+    actions = ActionChains(driver)
+    
+    driver.get(pv_login)
+    driver.find_element(by = By.XPATH, value = '//*[@id="txtUserName"]').send_keys(user)
+    driver.find_element(by = By.XPATH, value = '//*[@id="txtPassword"]').send_keys(passw)
+    driver.find_element(by = By.NAME, value = 'cmdLogin').send_keys(Keys.RETURN)
+    
+    wait = WebDriverWait(driver, 10)
+    wait.until(EC.url_matches(('https://loffler.printfleet.com/mast_home.aspx')))
+    report_link = driver.find_element(by = By.LINK_TEXT, value = 'Reports')
+    #report_link = driver.find_element(by = By.XPATH, value = '//*[@id="pagecontent"]/div/ul/li[3]/a')
+    actions.click(report_link)
+    actions.perform()
+
+    wait.until(EC.url_matches(('https://loffler.printfleet.com/reportList.aspx')))
+    drpdwn = Select(driver.find_element(by = By.CSS_SELECTOR, value = '#ContentPlaceHolder1_uiReportList > div > div.pDiv > div.pDiv2 > div:nth-child(1) > select'))
+    drpdwn.select_by_value('200')
+    refresh = driver.find_element(by = By.CSS_SELECTOR, value = '#ContentPlaceHolder1_uiReportList > div > div.pDiv > div.pDiv2 > div:nth-child(9) > div')
+    actions.click(refresh)
+    actions.perform()
+    wait.until(EC.presence_of_element_located((By.LINK_TEXT, "Toner Low Report (10%)")))
+    report_link = driver.find_element(by = By.LINK_TEXT, value = "Toner Low Report (10%)")
+    actions.click(report_link)
+    actions.perform()
+    
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#ContentPlaceHolder1_runParameters_groupList_button')))
+    print('butts')
+    drpdwn = driver.find_element(by = By.XPATH, value = '//img[@alt="@"]')
+    #drpdwn = driver.find_element(by = By.CSS_SELECTOR, value = '#ContentPlaceHolder1_runParameters_groupList_button')
+    actions.click(drpdwn)
+    actions.perform()
+    #devices = '//*[@id="ContentPlaceHolder1_runParameters_groupList_uiTree-02dcbb93-6c2d-43dc-83ab-382f0c9878a2"]/a'
+    devices = driver.find_element(by = By.LINK_TEXT, value = "HCMC (1373)")
+    actions.click(devices)
+    actions.perform()
+    run = driver.find_element(by = By.XPATH, value = '//*[@id="run"]')
+    actions.click(run)
+    actions.perform()
+
+    wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="rd063"]/h1')))
+    print('more butts')
+    #driver.find_element(by = By.XPATH, value = '//*[@id="ContentPlaceHolder1_runParameters_groupList_button"]')
+    #driver.find_element(by = By.LINK_TEXT, value = "HCMC (1373)").click
+    #driver.find_element(by = By.XPATH, value = '//*[@id="run"]').click
+    
 
 def begin_report(soup):
     htmlstatusVar.set('Analyzing report...')
@@ -389,7 +456,7 @@ def create_gui():
     clnc_label = tk.Label(botframe, text = 'Clinic Value:')
     clnc_label.grid(row = 2, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
-    report_btn = ttk.Button(frame4, textvariable = htmlstatusVar, command = login, width = 17)
+    report_btn = ttk.Button(frame4, textvariable = htmlstatusVar, command = logincel, width = 17)
     report_btn.grid(row = 3, column = 0, padx = 10, pady = 5, sticky = 'nw')
     
     ## CSV Tab
