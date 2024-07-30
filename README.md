@@ -38,3 +38,5 @@ v0.3.0
 - Added more UI elements
 - Added functionality for configuring the way the program parses the PrintVision Report
 - Added options for user to view report after it has been generated
+
+`pyinstaller PrintVision_Report_Parser.py -w -F --add-data "$playwright_driver_dir:driver"`

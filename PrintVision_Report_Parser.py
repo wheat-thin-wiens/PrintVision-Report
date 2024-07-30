@@ -13,11 +13,15 @@ from selenium.webdriver.support.ui import WebDriverWait, Select
 import time
 import tkinter as tk
 from tkinter import filedialog as fd, messagebox, ttk
-from webdriver_manager.chrome import ChromeDriverManager
+#from webdriver_manager.chrome import ChromeDriverManager
+
+global credsPresent
 
 try:
     import creds
+    credsPresent = True
 except ImportError:
+    credPresent = False
     pass
 
 root = tk.Tk()
@@ -413,8 +417,12 @@ def create_gui():
     html_hsptlValue = tk.StringVar(value = '5')
     html_clncValue = tk.StringVar(value = '10')
 
-    username = tk.StringVar(value = creds.username)
-    password = tk.StringVar(value = creds.password)
+    if credsPresent:
+        username = tk.StringVar(value = creds.username)
+        password = tk.StringVar(value = creds.password)
+    else:
+        username = tk.StringVar(value = '')
+        password = tk.StringVar(value = '')
 
     topframe = ttk.LabelFrame(frame4, text = "Login")
     topframe.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'new')

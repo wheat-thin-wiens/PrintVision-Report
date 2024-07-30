@@ -1,0 +1,17 @@
+07/30/24 14:03 - Using proactor: IocpProactor
+07/30/24 14:03 - opening browser
+07/30/24 14:03 - navigating to login page
+07/30/24 14:03 - inputting username
+07/30/24 14:03 - inputting password
+07/30/24 14:03 - logging in
+07/30/24 14:03 - navigating to home page
+07/30/24 14:03 - navigating to report page
+07/30/24 14:03 - clicking on dropdown
+07/30/24 14:03 - clicking on devices
+07/30/24 14:03 - running report
+07/30/24 14:03 - navigating to report
+07/30/24 14:03 - capturing report html
+07/30/24 14:03 - html saved as soup
+07/30/24 14:03 - browser closed
+07/30/24 14:03 - passing to next function...
+07/30/24 14:03 - data successfully passed
