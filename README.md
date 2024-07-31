@@ -21,22 +21,40 @@ Using the application:
 
 Given the way PrintVision generates its reports, much careful attention has been given to the way this program parses strings. The main function of the program, called `def report(location, IP, value)` in the code, takes the columns where the toner levels are stored and strips it down to just the number so that it may be converted to an integer. It takes the arguments `(location, IP, value)` so that the function does not have to be written multiple times. Originally it was written multiple times, with the IP addresses for the printers in the hosipital and clinics hard coded directly in the function, but I got sick of scrolling so much in the code. Now, when the user selects the Run button, another function, called `def run_report(location)` passes in the appropriate arguments based on the user's input. When the Run button is selected, it passes the value of the location dropdown menu to the `def run_report(location)` function, where the values from the hospital and clinic entry widgets as well as the corresponding IP addresses are passed to the `def report(location, IP, value)` function.
 
+## Main Branch Features
+
+- Read from HTML using PlayWright and BeautifulSoup
+- Read from CSV
+- Configure which columns read as which piece of data (in case CSV format were to change)
+
 ## Version Tracking
 
-v0.1.0
+### v0.1.0
 
 - Basic functionality
   
-v0.2.0
+### v0.2.0
 
 - Added more UI elements
 - Added user input to specify report generated
   
-v0.3.0
+### v0.3.0
 
 - Cleaned up code for basic functionality
 - Added more UI elements
 - Added functionality for configuring the way the program parses the PrintVision Report
 - Added options for user to view report after it has been generated
+
+### v0.4.0
+
+- Fixed icon compatibility for packaging as EXE
+
+### HTML
+
+- Built PlayWright functionality for getting data directly from website
+
+### PDF
+
+- Future - Build functionality to read data from PDF delivered via email
 
 `pyinstaller -w -F --icon=printing.ico --add-data="printing.ico;." PrintVision_Report_Parser.py`
