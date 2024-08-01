@@ -1,8 +1,10 @@
 # PrintVision Report Parser by Ethan Wiens
 from bs4 import BeautifulSoup
 import csv
+from lxml import etree
 import os, os.path
 from playwright.sync_api import sync_playwright
+import re
 import tkinter as tk
 from tkinter import filedialog as fd, messagebox, ttk
 
@@ -30,7 +32,7 @@ def login():
     passw = password.get()
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless = True, )
+        browser = p.chromium.launch(headless = True, slow_mo=0)
         page = browser.new_page()
         page.goto(pv_login)
         page.fill('input#txtUserName', user)
@@ -39,8 +41,29 @@ def login():
 
         htmlstatusVar.set('Collecting report...')
         page.goto(report_url)
+
+        report_page = page.inner_html('#content')
+        soup = BeautifulSoup(report_page, 'html.parser')
+        all_spans = soup.find_all('span')
+        list_spans = []
+        devicecount = ''
+
+        for x in all_spans:
+            list_spans.append(x.text)
+
+        for x in list_spans:
+            num = re.compile(r"([\d]{4})")
+            result = num.search(x)
+            if result:
+                print(f'found device count: {result.string.strip('()')}')
+                devicecount = result.string.strip('()')
+                break
+            else:
+                print('still looking')
+                continue
+
         page.get_by_role("img", name="@").click()
-        page.get_by_role("link", name="HCMC (1373)").click()
+        page.get_by_role("link", name = f"HCMC ({devicecount})").click()
         page.click('#run')
         page.wait_for_selector('.pfReport')
         report = page.inner_html('#content')
