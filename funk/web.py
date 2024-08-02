@@ -111,38 +111,38 @@ class Web_Report:
                             magenta = list[8].strip('%')
                             yellow = list[9].strip('%')
                             if ip == '10.210':
-                                if int(black) <= cValue:
+                                if int(black) <= self.cValue:
                                     toners.append(black)
-                                elif int(black) > cValue:
+                                elif int(black) > self.cValue:
                                     list[6] = ' '
-                                if int(cyan) <= cValue:
+                                if int(cyan) <= self.cValue:
                                     toners.append(cyan)
-                                elif int(cyan) > cValue:
+                                elif int(cyan) > self.cValue:
                                     list[7] = ' '
-                                if int(magenta) <= cValue:
+                                if int(magenta) <= self.cValue:
                                     toners.append(magenta)
-                                elif int(magenta) > cValue:
+                                elif int(magenta) > self.cValue:
                                     list[8] = ' '
-                                if int(yellow) <= cValue:
+                                if int(yellow) <= self.cValue:
                                     toners.append(yellow)
-                                elif int(yellow) > cValue:
+                                elif int(yellow) > self.cValue:
                                     list[9] = ' '
                             else:
-                                if int(black) <= hValue:
+                                if int(black) <= self.hValue:
                                     toners.append(black)
-                                elif int(black) > hValue:
+                                elif int(black) > self.hValue:
                                     list[6] = ' '
-                                if int(cyan) <= hValue:
+                                if int(cyan) <= self.hValue:
                                     toners.append(cyan)
-                                elif int(cyan) > hValue:
+                                elif int(cyan) > self.hValue:
                                     list[7] = ' '
-                                if int(magenta) <= hValue:
+                                if int(magenta) <= self.hValue:
                                     toners.append(magenta)
-                                elif int(magenta) > hValue:
+                                elif int(magenta) > self.hValue:
                                     list[8] = ' '
-                                if int(yellow) <= hValue:
+                                if int(yellow) <= self.hValue:
                                     toners.append(yellow)
-                                elif int(yellow) > hValue:
+                                elif int(yellow) > self.hValue:
                                     list[9] = ' '
                         except TypeError:
                             pass
