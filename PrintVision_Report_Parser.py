@@ -1,7 +1,6 @@
 # PrintVision Report Parser by Ethan Wiens
 from bs4 import BeautifulSoup
 import csv
-from lxml import etree
 import os, os.path
 from playwright.sync_api import sync_playwright
 import re
@@ -67,7 +66,7 @@ def login():
         page.click('#run')
         page.wait_for_selector('.pfReport')
         report = page.inner_html('#content')
-        soup = BeautifulSoup(report, 'lxml')
+        soup = BeautifulSoup(report, 'html.parser')
         
     begin_report(soup)
 
