@@ -1,6 +1,7 @@
 # PrintVision Report Parser by Ethan Wiens
 from bs4 import BeautifulSoup
 import csv
+import funk
 import os, os.path
 from playwright.sync_api import sync_playwright
 import re
@@ -10,7 +11,7 @@ from tkinter import filedialog as fd, messagebox, ttk
 global credsPresent
 
 try:
-    import creds
+    import funk.creds
     credsPresent = True
 except ImportError:
     credPresent = False
@@ -367,8 +368,8 @@ def create_gui():
     html_clncValue = tk.StringVar(value = '10')
 
     if credsPresent:
-        username = tk.StringVar(value = creds.username)
-        password = tk.StringVar(value = creds.password)
+        username = tk.StringVar(value = funk.creds.username)
+        password = tk.StringVar(value = funk.creds.password)
     else:
         username = tk.StringVar(value = '')
         password = tk.StringVar(value = '')
