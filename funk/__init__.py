@@ -1,4 +1,6 @@
-from .web import Web_Report
+from .gooey import create_gui
+from .spreadsheet import open_file, which_csv, csv_report
+
 
 try:
     import creds

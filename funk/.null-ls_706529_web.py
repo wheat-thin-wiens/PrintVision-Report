@@ -3,7 +3,6 @@ import csv
 import os, os.path
 from playwright.sync_api import sync_playwright
 import re
-from tkinter import filedialog as fd, messagebox
 
 def login(username, password, hValue, cValue, location):
     pv_login = 'https://loffler.printfleet.com/login.aspx'
@@ -46,9 +45,9 @@ def login(username, password, hValue, cValue, location):
         report = page.inner_html('#content')
         soup = BeautifulSoup(report, 'html.parser')
         
-    which_html(soup, hValue, cValue, location)
+    which_report(soup, hValue, cValue, location)
 
-def which_html(soup, hValue, cValue, location):
+def which_report(soup, hValue, cValue, location):
 
     if location == 'All':
         html_report(soup, hValue, cValue, ['10.200', '10.205', '10.210'])
@@ -94,6 +93,8 @@ def html_report(soup, hValue, cValue, IP_list):
                     boop = beep.split('\n')
                     list.append(boop[0])
                 
+                crnt_ip = list[2]
+                
                 if ip in list[2]:
                     toners = []
                     try:
@@ -102,38 +103,38 @@ def html_report(soup, hValue, cValue, IP_list):
                         magenta = list[8].strip('%')
                         yellow = list[9].strip('%')
                         if ip == '10.210':
-                            if int(black) <= cValue:
+                            if int(black) <= svim.lsp.buf.renameelf.cValue:
                                 toners.append(black)
-                            elif int(black) > cValue:
+                            elif int(black) > self.cValue:
                                 list[6] = ' '
-                            if int(cyan) <= cValue:
+                            if int(cyan) <= self.cValue:
                                 toners.append(cyan)
-                            elif int(cyan) > cValue:
+                            elif int(cyan) > self.cValue:
                                 list[7] = ' '
-                            if int(magenta) <= cValue:
+                            if int(magenta) <= self.cValue:
                                 toners.append(magenta)
-                            elif int(magenta) > cValue:
+                            elif int(magenta) > self.cValue:
                                 list[8] = ' '
-                            if int(yellow) <= cValue:
+                            if int(yellow) <= self.cValue:
                                 toners.append(yellow)
-                            elif int(yellow) > cValue:
+                            elif int(yellow) > self.cValue:
                                 list[9] = ' '
                         else:
-                            if int(black) <= hValue:
+                            if int(black) <= self.hValue:
                                 toners.append(black)
-                            elif int(black) > hValue:
+                            elif int(black) > self.hValue:
                                 list[6] = ' '
-                            if int(cyan) <= hValue:
+                            if int(cyan) <= self.hValue:
                                 toners.append(cyan)
-                            elif int(cyan) > hValue:
+                            elif int(cyan) > self.hValue:
                                 list[7] = ' '
-                            if int(magenta) <= hValue:
+                            if int(magenta) <= self.hValue:
                                 toners.append(magenta)
-                            elif int(magenta) > hValue:
+                            elif int(magenta) > self.hValue:
                                 list[8] = ' '
-                            if int(yellow) <= hValue:
+                            if int(yellow) <= self.hValue:
                                 toners.append(yellow)
-                            elif int(yellow) > hValue:
+                            elif int(yellow) > self.hValue:
                                 list[9] = ' '
                     except TypeError:
                         pass
