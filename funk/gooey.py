@@ -1,12 +1,11 @@
-import spreadsheet
+from . import spreadsheet, web
 import tkinter as tk
-from tkinter import filedialog as fd, messagebox, ttk
-import web
+from tkinter import ttk
 
 global credsPresent
 
 try:
-    import creds
+    from . import creds
     credsPresent = True
 except ImportError:
     credsPresent = False
@@ -17,16 +16,6 @@ def create_gui(window):
     tabs = ttk.Notebook(window)
     tabs.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'n')
 
-    frame1 = ttk.Frame(tabs, width = 400, height = 280)
-    frame2 = ttk.Frame(tabs, width = 400, height = 280)
-    frame3 = ttk.Frame(tabs, width = 400, height = 280)
-    frame1.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'n')
-    frame2.grid(row = 0, column = 2, padx = 10, pady = 5, sticky = 'n')
-    frame3.grid(row = 0, column = 3, padx = 10, pady = 5, sticky = 'n')
-    tabs.add(frame1, text = "CSV")
-    tabs.add(frame2, text = "Configure")
-    tabs.add(frame3, text = 'Info')
-    
     ## HTML Tab
     global username, password, htmlstatusVar, html_hsptlValue, html_clncValue, html_location_dropdown
 
@@ -35,8 +24,8 @@ def create_gui(window):
     html_clncValue = tk.StringVar(value = '10')
     
     if credsPresent:
-        username = tk.StringVar(value = creds.username)
-        password = tk.StringVar(value = creds.password)
+        username = tk.StringVar(value = creds.username) # type: ignore
+        password = tk.StringVar(value = creds.password) # type: ignore
     else:
         username = tk.StringVar(value = '')
         password = tk.StringVar(value = '')
@@ -86,10 +75,14 @@ def create_gui(window):
     clnc_label = tk.Label(botframe, text = 'Clinic Value:')
     clnc_label.grid(row = 2, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
-    report_btn = ttk.Button(frame4, textvariable = htmlstatusVar, command = lambda:web.login(self.username, self.password,  html_location_dropdown.get), width = 17)
+    report_btn = ttk.Button(frame4, textvariable = htmlstatusVar, command = lambda:web.login(username.get(), password.get(), hsptl_entry.get(), clnc_entry.get(),  html_location_dropdown.get), width = 17)
     report_btn.grid(row = 3, column = 0, padx = 10, pady = 5, sticky = 'nw')
     
     ## CSV Tab
+    frame1 = ttk.Frame(tabs, width = 400, height = 280)
+    frame1.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'n')
+    tabs.add(frame1, text = "CSV")
+
     global fileVar, runBtn, outVar, statusVar, hsptlValue, clncValue
 
     fileVar = tk.StringVar(value = "No file selected")
@@ -97,12 +90,6 @@ def create_gui(window):
     hsptlValue = tk.StringVar(value = '5')
     clncValue = tk.StringVar(value = '10')
     outVar = tk.StringVar(value = 'No destination selected')
-
-    openBtn = ttk.Button(frame1, text = "Open File", width = 15, command = spreadsheet.open_file)
-    openBtn.grid(row = 5, column = 0, padx = 10, pady = 5, sticky = 'se')
-
-    runBtn = ttk.Button(frame1, text = "Run", state = 'disabled', width = 15, command = lambda:spreadsheet.run_report(location_dropdown.get()))
-    runBtn.grid(row = 5, column = 1, padx = 10, pady = 5, sticky = 'se')
 
     inputFrame = ttk.LabelFrame(frame1, text = "Report Settings")
     inputFrame['borderwidth'] = 2
@@ -145,6 +132,9 @@ def create_gui(window):
 
     destination_label = tk.Label(inputFrame, textvariable = outVar, width = 23, anchor = 'w')
     destination_label.grid(row = 4, column = 1, padx = 10, pady = 5, sticky = 'nw')
+    
+    openrunBtn = ttk.Button(frame1, text = "Open and Run", width = 15, command = lambda:spreadsheet.open_file(location_dropdown.get(), hsptlValue_entry.get(), clncValue_entry.get()))
+    openrunBtn.grid(row = 5, column = 0, padx = 10, pady = 5, sticky = 'se')
 
     window.columnconfigure([0, 1], weight = 1)
     #root.rowconfigure([1, 0], weight = 1)

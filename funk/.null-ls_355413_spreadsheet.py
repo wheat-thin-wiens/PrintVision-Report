@@ -18,6 +18,7 @@ def open_file(location, hValue, cValue):
         if len(file) > 0:
             file_chosen = True
             which_csv(file, location, hValue, cValue)
+            break
         else:
             continue
 

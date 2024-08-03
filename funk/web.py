@@ -161,11 +161,11 @@ def html_report(soup, hValue, cValue, IP_list):
                 os.remove("C:/Users/Public/report.csv")
             saved = True
         except PermissionError:
-            file_error = messagebox.showwarning("Unable to save", "If a previous report is still open, make sure you close it before running another report.")
+            messagebox.showwarning("Unable to save", "If a previous report is still open, make sure you close it before running another report.")
             #htmlstatusVar.set('Run Report')
             continue
     
     view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
     if view:
-        os.system(f"start excel.exe {outLocation}/report.csv")
+        os.system(f"start excel.exe {outLocation}/report.csv") # type: ignore
 
