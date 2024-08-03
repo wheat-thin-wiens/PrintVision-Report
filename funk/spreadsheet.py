@@ -58,7 +58,7 @@ def which_csv(file, location, hValue, cValue):
                 os.remove("C:/Users/Public/report.csv")
             saved = True
         except PermissionError:
-            file_error = messagebox.showwarning("Unable to save", "If a previous report is still open, make sure you close it before running another report.")
+            messagebox.showwarning("Unable to save", "If a previous report is still open, make sure you close it before running another report.")
             #htmlstatusVar.set('Run Report')
             continue
     

@@ -162,7 +162,6 @@ def html_report(soup, hValue, cValue, IP_list):
             saved = True
         except PermissionError:
             messagebox.showwarning("Unable to save", "If a previous report is still open, make sure you close it before running another report.")
-            #htmlstatusVar.set('Run Report')
             continue
     
     view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
