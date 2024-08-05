@@ -5,7 +5,7 @@ import tkinter as tk
 root = tk.Tk()
 root.geometry("365x300")
 root.title("PrintVision Report")
-#root.iconbitmap('printing.ico')
+root.iconbitmap('printing.ico')
 
 ## Running the Program
 if __name__ == '__main__':
