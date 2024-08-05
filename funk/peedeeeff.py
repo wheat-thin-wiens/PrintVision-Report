@@ -24,7 +24,15 @@ def open_pdf(location, hValue, cValue):
 
 def which_pdf(file, location, hValue, cValue):
     reader = PdfReader(file)
-
+    num_pages = len(reader.pages)
+    
+    for x in range(0, num_pages):
+        page = reader.pages[x]
+        content = page.extract_text()
+        print(content)
 
 def pdf_report(file, IP, hValue, cValue):
     return
+
+
+#open_pdf('All', 5, 10)

@@ -75,10 +75,72 @@ def create_gui(window):
     clnc_label = tk.Label(botframe, text = 'Clinic Value:')
     clnc_label.grid(row = 2, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
-    report_btn = ttk.Button(frame4, textvariable = htmlstatusVar, command = lambda:web.login(username.get(), password.get(), hsptl_entry.get(), clnc_entry.get(),  html_location_dropdown.get), width = 17)
+    report_btn = ttk.Button(frame4, textvariable = htmlstatusVar, command = lambda:web.login(username.get(), password.get(), int(hsptl_entry.get()), int(clnc_entry.get()),  html_location_dropdown.get()), width = 17)
     report_btn.grid(row = 3, column = 0, padx = 10, pady = 5, sticky = 'nw')
     
     ## CSV Tab
+    frame1 = ttk.Frame(tabs, width = 400, height = 280)
+    frame1.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'n')
+    tabs.add(frame1, text = "CSV")
+
+    global fileVar, runBtn, outVar, statusVar, hsptlValue, clncValue
+
+    fileVar = tk.StringVar(value = "No file selected")
+    statusVar = tk.StringVar(value = "Ready")
+    hsptlValue = tk.StringVar(value = '5')
+    clncValue = tk.StringVar(value = '10')
+    outVar = tk.StringVar(value = 'No destination selected')
+
+    inputFrame = ttk.LabelFrame(frame1, text = "Report Settings")
+    inputFrame['borderwidth'] = 2
+    inputFrame['relief'] = 'groove'
+    inputFrame.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'nwe')
+
+    location_dropdown = ttk.Combobox(
+        inputFrame,
+        state = "readonly",
+        values = ['All', 'Hospital', 'Clinics'],
+        width = 20,
+    )
+
+    location_dropdown.current(0)
+    location_dropdown.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'nw')
+
+    location_label = tk.Label(inputFrame, text = "Location:")
+    location_label.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'nw')
+
+    hsptlValue_entry = ttk.Entry(inputFrame, textvariable = hsptlValue, width = 23)
+    hsptlValue_entry.grid(row = 1, column = 1, padx = 10, pady = 5, sticky = 'nw')
+
+    hsptlValue_label = tk.Label(inputFrame, text = "Hospital Value:")
+    hsptlValue_label.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')
+
+    clncValue_entry = ttk.Entry(inputFrame, textvariable = clncValue, width = 23)
+    clncValue_entry.grid(row = 2, column = 1, padx = 10, pady = 5, sticky = 'nw')
+
+    clncValue_label = tk.Label(inputFrame, text = "Clinic Value:")
+    clncValue_label.grid(row = 2, column = 0, padx = 10, pady = 5, sticky = 'nw')
+
+    file_label = tk.Label(inputFrame, text = 'File Selected:')
+    file_label.grid(row = 3, column = 0, padx = 10, pady = 5, sticky = 'nw')
+
+    fileVarlabel = tk.Label(inputFrame, textvariable = fileVar, width = 23, anchor = 'w')
+    fileVarlabel.grid(row = 3, column = 1, padx = 10, pady = 5, sticky = 'nw')
+
+    output_label = tk.Label(inputFrame, text = "Output Destination:")
+    output_label.grid(row = 4, column = 0, padx = 10, pady = 5, sticky = 'nw')
+
+    destination_label = tk.Label(inputFrame, textvariable = outVar, width = 23, anchor = 'w')
+    destination_label.grid(row = 4, column = 1, padx = 10, pady = 5, sticky = 'nw')
+    
+    openrunBtn = ttk.Button(frame1, text = "Open and Run", width = 15, command = lambda:spreadsheet.open_file(location_dropdown.get(), hsptlValue_entry.get(), clncValue_entry.get()))
+    openrunBtn.grid(row = 5, column = 0, padx = 10, pady = 5, sticky = 'w')
+
+    window.columnconfigure([0, 1], weight = 1)
+    #root.rowconfigure([1, 0], weight = 1)
+
+    ## PDF Tab
+    '''
     frame1 = ttk.Frame(tabs, width = 400, height = 280)
     frame1.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'n')
     tabs.add(frame1, text = "CSV")
@@ -138,3 +200,4 @@ def create_gui(window):
 
     window.columnconfigure([0, 1], weight = 1)
     #root.rowconfigure([1, 0], weight = 1)
+    '''

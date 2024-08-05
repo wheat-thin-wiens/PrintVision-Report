@@ -10,7 +10,7 @@ def login(username, password, hValue, cValue, location):
     report_url = 'https://loffler.printfleet.com/reportDetail.aspx?reportId=0afcca2e-f240-4ac3-ae81-438da7176e99'
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless = True, slow_mo=0)
+        browser = p.chromium.launch(headless = False, slow_mo=0)
         page = browser.new_page()
         page.goto(pv_login)
         page.fill('input#txtUserName', username)
@@ -98,46 +98,86 @@ def html_report(soup, hValue, cValue, IP_list):
                     toners = []
                     try:
                         black = list[6].strip('%')
-                        cyan = list[7].strip('%')
-                        magenta = list[8].strip('%')
-                        yellow = list[9].strip('%')
+                        
                         if ip == '10.210':
                             if int(black) <= cValue:
                                 toners.append(black)
                             elif int(black) > cValue:
                                 list[6] = ' '
-                            if int(cyan) <= cValue:
-                                toners.append(cyan)
-                            elif int(cyan) > cValue:
-                                list[7] = ' '
-                            if int(magenta) <= cValue:
-                                toners.append(magenta)
-                            elif int(magenta) > cValue:
-                                list[8] = ' '
-                            if int(yellow) <= cValue:
-                                toners.append(yellow)
-                            elif int(yellow) > cValue:
-                                list[9] = ' '
+                            
                         else:
                             if int(black) <= hValue:
                                 toners.append(black)
                             elif int(black) > hValue:
                                 list[6] = ' '
+                            
+                    except TypeError:
+                        #print('k type error')
+                        pass
+                    except ValueError:
+                        #print('k value error')
+                        pass
+
+                    try:
+                        cyan = list[7].strip('%')
+
+                        if ip == '10.210':
+                            if int(cyan) <= cValue:
+                                toners.append(cyan)
+                            elif int(cyan) > cValue:
+                                list[7] = ' '
+                        else:
                             if int(cyan) <= hValue:
                                 toners.append(cyan)
                             elif int(cyan) > hValue:
                                 list[7] = ' '
+                    
+                    except TypeError:
+                        #print('c type error')
+                        pass
+                    except ValueError:
+                        #print('c value error')
+                        pass
+
+                    try:
+                        magenta = list[8].strip('%')
+                        if ip == '10.210':
+                            if int(magenta) <= cValue:
+                                toners.append(magenta)
+                            elif int(magenta) > cValue:
+                                list[8] = ' '
+                        else:
                             if int(magenta) <= hValue:
                                 toners.append(magenta)
                             elif int(magenta) > hValue:
                                 list[8] = ' '
+                    
+                    except TypeError:
+                        #print('m type error')
+                        pass
+                    except ValueError:
+                        #print('m value error')
+                        pass
+
+                    try:
+                        yellow = list[9].strip('%')
+
+                        if ip == '10.210':
+                            if int(yellow) <= cValue:
+                                toners.append(yellow)
+                            elif int(yellow) > cValue:
+                                list[9] = ' '
+                        else:
                             if int(yellow) <= hValue:
                                 toners.append(yellow)
                             elif int(yellow) > hValue:
                                 list[9] = ' '
+                    
                     except TypeError:
+                        #print('y type error')
                         pass
                     except ValueError:
+                        #print('y value error')
                         pass
 
                     if len(toners) > 0:
@@ -167,4 +207,3 @@ def html_report(soup, hValue, cValue, IP_list):
     view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
     if view:
         os.system(f"start excel.exe {outLocation}/report.csv") # type: ignore
-

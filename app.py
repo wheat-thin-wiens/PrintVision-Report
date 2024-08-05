@@ -3,7 +3,7 @@ import funk
 import tkinter as tk
 
 root = tk.Tk()
-root.geometry("365x325")
+root.geometry("365x300")
 root.title("PrintVision Report")
 #root.iconbitmap('printing.ico')
 
