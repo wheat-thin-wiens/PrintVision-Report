@@ -1,11 +1,13 @@
 from bs4 import BeautifulSoup
 import csv
+import json
 import os, os.path
 from playwright.sync_api import sync_playwright
 import re
 from tkinter import filedialog as fd, messagebox
 
 def login(username, password, hValue, cValue, location):
+    save(username, password)
     pv_login = 'https://loffler.printfleet.com/login.aspx'
     report_url = 'https://loffler.printfleet.com/reportDetail.aspx?reportId=0afcca2e-f240-4ac3-ae81-438da7176e99'
 
@@ -207,3 +209,16 @@ def html_report(soup, hValue, cValue, IP_list):
     view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
     if view:
         os.system(f"start excel.exe {outLocation}/report.csv") # type: ignore
+
+def save(username, password):
+    os.chdir('C:/Users/Public')
+    if os.path.isfile("PrintVision_Credentials.json"):
+        os.remove("PrintVision_Credentials.json")
+    
+    credentials = {
+        'Username': username,
+        'Password': password
+    }
+
+    with open('PrintVision_Credentials.json', 'x') as file:
+        json.dump(credentials, file, indent = 4)

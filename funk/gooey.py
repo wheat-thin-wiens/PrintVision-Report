@@ -1,15 +1,12 @@
+import json
+import os, os.path
 from . import spreadsheet, web
 import tkinter as tk
 from tkinter import ttk
 
 global credsPresent
 
-try:
-    from . import creds
-    credsPresent = True
-except ImportError:
-    credsPresent = False
-    pass
+
 
 def create_gui(window):
 # Tabbed UI
@@ -23,10 +20,14 @@ def create_gui(window):
     html_hsptlValue = tk.StringVar(value = '5')
     html_clncValue = tk.StringVar(value = '10')
     
-    if credsPresent:
-        username = tk.StringVar(value = creds.username) # type: ignore
-        password = tk.StringVar(value = creds.password) # type: ignore
-    else:
+    try:
+        os.chdir('C:/Users/Public')
+        with open('PrintVision_Credentials.json') as file:
+            data = json.load(file)
+            username = tk.StringVar(value = data.get('Username'))
+            password = tk.StringVar(value = data.get('Password'))
+    except FileNotFoundError:
+        print('file not found')
         username = tk.StringVar(value = '')
         password = tk.StringVar(value = '')
 
@@ -77,6 +78,10 @@ def create_gui(window):
 
     report_btn = ttk.Button(frame4, textvariable = htmlstatusVar, command = lambda:web.login(username.get(), password.get(), int(hsptl_entry.get()), int(clnc_entry.get()),  html_location_dropdown.get()), width = 15)
     report_btn.grid(row = 3, column = 0, padx = 10, pady = 5, sticky = 'nw')
+
+    #save_btn = ttk.Button(topframe, text= 'Save', command = lambda:web.save(username.get(), password.get()), width = 15)
+    #save_btn.grid(row = 2, column = 1, padx = 10, pady = 5, sticky = 'e')
+
     
     ## CSV Tab
     frame2 = ttk.Frame(tabs, width = 400, height = 280)

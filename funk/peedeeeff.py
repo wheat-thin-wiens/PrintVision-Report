@@ -28,6 +28,7 @@ def which_pdf(file, location, hValue, cValue):
     
     for x in range(0, num_pages):
         page = reader.pages[x]
+        page.rotate(270)
         content = page.extract_text()
         print(content)
 
