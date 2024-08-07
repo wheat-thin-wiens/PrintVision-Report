@@ -11,7 +11,6 @@ global ope
 ope = platform.system()
 
 def login(username, password, hValue, cValue, location):
-    save(username, password)
     pv_login = 'https://loffler.printfleet.com/login.aspx'
     report_url = 'https://loffler.printfleet.com/reportDetail.aspx?reportId=0afcca2e-f240-4ac3-ae81-438da7176e99'
 
@@ -51,6 +50,8 @@ def login(username, password, hValue, cValue, location):
         page.wait_for_selector('.pfReport')
         report = page.inner_html('#content')
         soup = BeautifulSoup(report, 'html.parser')
+
+        save(username, password)
         
     which_html(soup, hValue, cValue, location)
 
