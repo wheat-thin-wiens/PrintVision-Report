@@ -49,12 +49,20 @@ Given the way PrintVision generates its reports, much careful attention has been
 
 - Fixed icon compatibility for packaging as EXE
 
+### v0.5.0
+
+- Add macOS support
+- Split all functionality off into separate files
+- Saves and stores credentials in JSON file
+
 ### HTML
 
 - Built PlayWright functionality for getting data directly from website
 
 ### PDF
 
-- Future - Build functionality to read data from PDF delivered via email
+~~- Future - Build functionality to read data from PDF delivered via email~~
+
+CANCELLED
 
 `pyinstaller -w -F --icon=printing.ico --add-data="printing.ico;." PrintVision_Report_Parser.py`
