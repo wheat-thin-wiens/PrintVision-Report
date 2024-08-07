@@ -2,13 +2,9 @@ from bs4 import BeautifulSoup
 import csv
 import json
 import os, os.path
-import platform
 from playwright.sync_api import sync_playwright
 import re
 from tkinter import filedialog as fd, messagebox
-
-global ope
-ope = platform.system()
 
 def login(username, password, hValue, cValue, location):
     save(username, password)
@@ -64,10 +60,8 @@ def which_html(soup, hValue, cValue, location):
         html_report(soup, hValue, cValue, ['10.210'])
 
 def html_report(soup, hValue, cValue, IP_list):
-    if ope == 'Windows':
-        os.chdir('C:/Users/Public')
-    elif ope == 'Darwin':
-        os.chdir('/Users/ethanwiens/Downloads')
+    os.chdir('C:/Users/Public')
+    #os.chdir('/Users/ethanwiens/Downloads')
     
     if os.path.isfile('report.csv'):
         os.remove('report.csv')
@@ -217,18 +211,14 @@ def html_report(soup, hValue, cValue, IP_list):
         os.system(f"start excel.exe {outLocation}/report.csv") # type: ignore
 
 def save(username, password):
-    if ope == 'Windows':
-        os.chdir('C:/Users/Public')
-    elif ope == 'Darwin':
-        os.chdir('/Users/ethanwiens/dev/PrintVision-Report')
-
+    os.chdir('C:/Users/Public')
     if os.path.isfile("PrintVision_Credentials.json"):
-        return
-    else:
-        credentials = {
-            'Username': username,
-            'Password': password
-        }
+        os.remove("PrintVision_Credentials.json")
+    
+    credentials = {
+        'Username': username,
+        'Password': password
+    }
 
-        with open('PrintVision_Credentials.json', 'x') as file:
-            json.dump(credentials, file, indent = 4)
+    with open('PrintVision_Credentials.json', 'x') as file:
+        json.dump(credentials, file, indent = 4)
