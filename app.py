@@ -1,7 +1,17 @@
 # PrintVision Report Parser by Ethan Wiens
 import funk
+import os
 import platform
 import tkinter as tk
+
+basedir = os.path.dirname(__file__)
+
+try:
+    from ctypes import windll
+    myappid = "mycompany.myproduct.subproduct.version"
+    windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+except ImportError:
+    pass
 
 ope = platform.system()
 root = tk.Tk()

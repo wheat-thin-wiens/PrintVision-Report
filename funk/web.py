@@ -16,7 +16,7 @@ def login(username, password, hValue, cValue, location):
     report_url = 'https://loffler.printfleet.com/reportDetail.aspx?reportId=0afcca2e-f240-4ac3-ae81-438da7176e99'
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless = False, slow_mo=0)
+        browser = p.chromium.launch(headless = True, slow_mo=0)
         page = browser.new_page()
         page.goto(pv_login)
         page.fill('input#txtUserName', username)
@@ -87,6 +87,7 @@ def html_report(soup, hValue, cValue, IP_list):
         for x in head.find_all('th'):
             columns.append(x.text)
         spamwriter.writerow(columns)
+        row_count = 0
 
         #tbody is the table containing the entire report
         body = soup.find('tbody')
@@ -189,8 +190,9 @@ def html_report(soup, hValue, cValue, IP_list):
                         pass
 
                     if len(toners) > 0:
+                        row_count += 1
                         spamwriter.writerow(list)
-                        print('row added')
+                        print(f'\rRows Added: ({row_count})', end = '')
                 
                 else:
                     continue
