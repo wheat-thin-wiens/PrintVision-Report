@@ -1,1 +1,6 @@
-creds.py
+__pycache__
+/funk/__pycache__
+/funk/creds.py
+/funk/.null-ls_373406___init__.py
+.DS_Store
+printvision.json
