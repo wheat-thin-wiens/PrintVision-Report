@@ -97,13 +97,14 @@ def create_gui(window):
     frame2.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'n')
     tabs.add(frame2, text = "CSV")
 
-    global fileVar, runBtn, outVar, statusVar, hsptlValue, clncValue
+    global fileVar, runBtn, outVar, statusVar, hsptlValue, clncValue, csvuseBlacklist
 
     fileVar = tk.StringVar(value = "No file selected")
     statusVar = tk.StringVar(value = "Ready")
     hsptlValue = tk.StringVar(value = '5')
     clncValue = tk.StringVar(value = '10')
     outVar = tk.StringVar(value = 'No destination selected')
+    csvuseBlacklist = tk.BooleanVar()
 
     fileFrame = ttk.LabelFrame(frame2, text = "File")
     fileFrame['borderwidth'] = 2
@@ -155,8 +156,11 @@ def create_gui(window):
     destination_label = tk.Label(fileFrame, textvariable = outVar, width = 23, anchor = 'w')
     destination_label.grid(row = 4, column = 1, padx = 10, pady = 5, sticky = 'nw')
     
-    openrunBtn = ttk.Button(frame2, text = "Open and Run", width = 15, command = lambda:spreadsheet.open_file(location_dropdown.get(), hsptlValue_entry.get(), clncValue_entry.get()))
+    openrunBtn = ttk.Button(frame2, text = "Open and Run", width = 15, command = lambda:spreadsheet.open_file(location_dropdown.get(), int(hsptlValue_entry.get()), int(clncValue_entry.get()), csvuseBlacklist.get()))
     openrunBtn.grid(row = 5, column = 0, padx = 10, pady = 5, sticky = 'w')
+
+    csvblcklstCheck = tk.Checkbutton(frame2, text = "Use Blacklist", variable = csvuseBlacklist, onvalue = True, offvalue = False)
+    csvblcklstCheck.grid(row = 5, column = 1, padx = 10, pady = 5, sticky = 'nw')
 
     #window.columnconfigure([0, 1], weight = 1)
     #root.rowconfigure([1, 0], weight = 1)

@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from . import blacklist
 import csv
 import json
 import os, os.path
@@ -10,7 +11,7 @@ from tkinter import filedialog as fd, messagebox
 global ope
 ope = platform.system()
 
-def login(username, password, hValue, cValue, location, blacklist):
+def login(username, password, hValue, cValue, location, blist):
     pv_login = 'https://loffler.printfleet.com/login.aspx'
     report_url = 'https://loffler.printfleet.com/reportDetail.aspx?reportId=0afcca2e-f240-4ac3-ae81-438da7176e99'
 
@@ -52,18 +53,18 @@ def login(username, password, hValue, cValue, location, blacklist):
         soup = BeautifulSoup(report, 'html.parser')
 
     save(username, password)    
-    which_html(soup, hValue, cValue, location, blacklist)
+    which_html(soup, hValue, cValue, location, blist)
 
-def which_html(soup, hValue, cValue, location, blacklist):
+def which_html(soup, hValue, cValue, location, blist):
 
     if location == 'All':
-        html_report(soup, hValue, cValue, ['10.200', '10.205', '10.210'], blacklist)
+        html_report(soup, hValue, cValue, ['10.200', '10.205', '10.210'], blist)
     elif location == 'Hospital':
-        html_report(soup, hValue, cValue, ['10.200', '10.205', blacklist])
+        html_report(soup, hValue, cValue, ['10.200', '10.205', blist])
     elif location == 'Clinic':
-        html_report(soup, hValue, cValue, ['10.210'], blacklist)
+        html_report(soup, hValue, cValue, ['10.210'], blist)
 
-def html_report(soup, hValue, cValue, IP_list, blacklist):
+def html_report(soup, hValue, cValue, IP_list, blist):
     if ope == 'Windows':
         os.chdir('C:/Users/Public')
     elif ope == 'Darwin':
@@ -105,6 +106,7 @@ def html_report(soup, hValue, cValue, IP_list, blacklist):
                 
                 if ip in list[2]:
                     toners = []
+
                     try:
                         black = list[6].strip('%')
                         
@@ -190,18 +192,18 @@ def html_report(soup, hValue, cValue, IP_list, blacklist):
                         pass
 
                     if len(toners) > 0:
-                        if blacklist:
-                            checkedLine = checkBlacklist(list)
+                        if blist:
+                            checkedLine = blacklist.checkBlacklist(list)
                             if len(checkedLine) > 1:
                                 row_count += 1
                                 print(f'\rRows Added: ({row_count})', end = '')
                                 spamwriter.writerow(checkedLine)
                             else:
                                 continue
-                        elif not blacklist:
+                        elif not blist:
                             row_count += 1
-                            spamwriter.writerow(list)
                             print(f'\rRows Added: ({row_count})', end = '')
+                            spamwriter.writerow(list)
                 
                 else:
                     continue
@@ -252,22 +254,22 @@ def save(username, password):
         with open('printvision.json', 'x') as file:
             json.dump(credentials, file, indent = 4)
 
-def checkBlacklist(line):
-    if ope == 'Windows':
-        os.chdir('C:/Users/Public')
-    elif ope == 'Darwin':
-        os.chdir('/Users/ethanwiens/dev/PrintVision-Report')
+# def checkBlacklist(line):
+#     if ope == 'Windows':
+#         os.chdir('C:/Users/Public')
+#     elif ope == 'Darwin':
+#         os.chdir('/Users/ethanwiens/dev/PrintVision-Report')
 
-    with open('printvision.json', 'r') as file:
-        data = json.load(file)
-        theList = data.get('Blacklist')
+#     with open('printvision.json', 'r') as file:
+#         data = json.load(file)
+#         theList = data.get('Blacklist')
 
-    for x in theList:
-        if x in line:
-            print(f'Found blacklisted item: {line[3]}')
-            line = []
-            return line
-        else:
-            continue
-    return line
+#     for x in theList:
+#         if x in line:
+#             print(f'Found blacklisted item: {line[3]}')
+#             line = []
+#             return line
+#         else:
+#             continue
+#     return line
     

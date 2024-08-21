@@ -34,3 +34,43 @@ def readList(data, blacklist):
             return data
         else:
             return data
+        
+def checkBlacklist(line):
+    if ope == 'Windows':
+        os.chdir('C:/Users/Public')
+    elif ope == 'Darwin':
+        os.chdir('/Users/ethanwiens/dev/PrintVision-Report')
+
+    with open('printvision.json', 'r') as file:
+        data = json.load(file)
+        theList = data.get('Blacklist')
+
+    for x in theList:
+        if x in line:
+            print(f'Found blacklisted item: {line[3]}')
+            line = []
+            return line
+        else:
+            continue
+    return line
+
+def csvCheckBlacklist(line):
+    if ope == "windows":
+        os.chdir('C:/Users/Public')
+
+    with open('printvision.json', 'r') as file:
+        data = json.load(file)
+        theList = data.get('Blacklist')
+
+    line_copy = []
+    for x in line:
+        line_copy.append(x.replace('"', ''))
+
+    for x in theList:
+        if x in line_copy:
+            print(f'Found blacklisted item: {line_copy[3]}')
+            line_copy = []
+            return line_copy
+        else:
+            continue
+    return line_copy
