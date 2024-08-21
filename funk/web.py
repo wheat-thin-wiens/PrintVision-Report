@@ -60,7 +60,7 @@ def which_html(soup, hValue, cValue, location, blist):
     if location == 'All':
         html_report(soup, hValue, cValue, ['10.200', '10.205', '10.210'], blist)
     elif location == 'Hospital':
-        html_report(soup, hValue, cValue, ['10.200', '10.205', blist])
+        html_report(soup, hValue, cValue, ['10.200', '10.205'], blist)
     elif location == 'Clinic':
         html_report(soup, hValue, cValue, ['10.210'], blist)
 
