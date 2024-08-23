@@ -22,10 +22,9 @@ elif ope == "Darwin":
     root.geometry('525x365')
 
 root.title("PrintVision Report")
-root.iconbitmap('printing.ico')
+root.iconbitmap(os.path.join(basedir, 'printing.ico'))
 
 ## Running the Program
 if __name__ == '__main__':
     funk.create_gui(root)
     root.mainloop()
-  
