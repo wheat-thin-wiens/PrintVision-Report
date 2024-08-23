@@ -38,11 +38,11 @@ def login(username, password, hValue, cValue, location, blist):
             num = re.compile(r"([\d]{4})")
             result = num.search(x)
             if result:
-                print(f'found device count: {result.string.strip('()')}')
                 devicecount = result.string.strip('()')
+                print(f'Found device count: {devicecount}')
                 break
             else:
-                print('still looking')
+                # print('still looking')
                 continue
 
         page.get_by_role("img", name="@").click()
@@ -196,18 +196,19 @@ def html_report(soup, hValue, cValue, IP_list, blist):
                             checkedLine = blacklist.checkBlacklist(list)
                             if len(checkedLine) > 1:
                                 row_count += 1
-                                print(f'\rRows Added: ({row_count})', end = '')
+                                # print(f'\rRows Added: ({row_count})', end = '')
                                 spamwriter.writerow(checkedLine)
                             else:
                                 continue
                         elif not blist:
                             row_count += 1
-                            print(f'\rRows Added: ({row_count})', end = '')
+                            # print(f'\rRows Added: ({row_count})', end = '')
                             spamwriter.writerow(list)
                 
                 else:
                     continue
 
+    print(f'Rows Added: {row_count}')
     print('\n')
     saved = False
     while not saved:
