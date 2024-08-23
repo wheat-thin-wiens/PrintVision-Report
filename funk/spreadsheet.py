@@ -36,13 +36,19 @@ def which_csv(file, location, hValue, cValue, blist):
         print('file created')
 
     if location == 'Hospital':
+        print('Hospital Results:')
         csv_report(file, '10.200', hValue, blist)
         csv_report(file, '10.205', hValue, blist)
+        print('\n')
     elif location == 'Clinic':
+        print('Clinic Results:')
         csv_report(file, '10.210', cValue, blist)
+        print('\n')
     elif location == 'All':
+        print('Hospital Results:')
         csv_report(file, '10.200', hValue, blist)
         csv_report(file, '10.205', hValue, blist)
+        print('\nClinic Results:')
         csv_report(file, '10.210', cValue, blist)
 
     saved = False
@@ -163,17 +169,19 @@ def csv_report(file, IP, value, blist):
 
                     if len(toners) > 0:
                         if blist:
-                            checkedList = blacklist.csvCheckBlacklist(list)
+                            checkedList = blacklist.checkBlacklist(list)
                             if len(checkedList) > 0:
                                 row_count += 1
-                                print(f'\rRows Added: ({row_count})', end = '')
+                                # print(f'\rRows Added: ({row_count})', end = '')
                                 spamwriter.writerow(checkedList)
                             else:
                                 continue
                         elif not blist:
                             row_count += 1
-                            print(f'\rRows Added: ({row_count})', end = '')
+                            # print(f'\rRows Added: ({row_count})', end = '')
                             spamwriter.writerow(list)
 
                 else:
                     continue
+        
+    print(f'Rows added: {row_count}')

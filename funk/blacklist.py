@@ -45,23 +45,6 @@ def checkBlacklist(line):
         data = json.load(file)
         theList = data.get('Blacklist')
 
-    for x in theList:
-        if x in line:
-            print(f'Found blacklisted item: {line[3]}')
-            line = []
-            return line
-        else:
-            continue
-    return line
-
-def csvCheckBlacklist(line):
-    if ope == "windows":
-        os.chdir('C:/Users/Public')
-
-    with open('printvision.json', 'r') as file:
-        data = json.load(file)
-        theList = data.get('Blacklist')
-
     line_copy = []
     for x in line:
         line_copy.append(x.replace('"', ''))
