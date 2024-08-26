@@ -27,14 +27,6 @@ def saveList(list):
         with open('printvision.json', 'x') as file:
             json.dump(blacklist, file, indent = 4)
 
-def readList(data, blacklist):
-    for x in blacklist:
-        if x in data:
-            data = []
-            return data
-        else:
-            return data
-        
 def checkBlacklist(line):
     if ope == 'Windows':
         os.chdir('C:/Users/Public')
