@@ -4,7 +4,7 @@ from . import blacklist, spreadsheet, web
 import tkinter as tk
 from tkinter import ttk
 
-def create_gui(window):
+def create_gui(window, appVer):
 # Tabbed UI
     tabs = ttk.Notebook(window)
     tabs.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'n')
@@ -32,17 +32,17 @@ def create_gui(window):
         username = tk.StringVar(value = '')
         password = tk.StringVar(value = '')
 
-    frame4 = ttk.Frame(tabs, width = 400, height = 280)
-    frame4.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'n')
-    tabs.add(frame4, text = 'HTML')
+    frame1 = ttk.Frame(tabs, width = 400, height = 280)
+    frame1.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'n')
+    tabs.add(frame1, text = 'HTML')
 
-    topframe = ttk.LabelFrame(frame4, text = "Login")
+    topframe = ttk.LabelFrame(frame1, text = "Login")
     topframe.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'new')
 
-    sep = ttk.Separator(frame4, orient = 'horizontal')
+    sep = ttk.Separator(frame1, orient = 'horizontal')
     sep.grid(row = 1, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'nsew')
 
-    botframe = ttk.LabelFrame(frame4, text = 'Report')
+    botframe = ttk.LabelFrame(frame1, text = 'Report')
     botframe.grid(row = 2, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'new')
 
     user_lbl = tk.Label(topframe, text = "User Name:                      ")
@@ -78,14 +78,14 @@ def create_gui(window):
     clnc_label.grid(row = 2, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
     report_btn = ttk.Button(
-        frame4,
+        frame1,
         textvariable = htmlstatusVar,
         command = lambda:web.login(username.get(), password.get(), int(hsptl_entry.get()), int(clnc_entry.get()),  html_location_dropdown.get(), useBlacklist.get()),
         width = 15
     )
     report_btn.grid(row = 3, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
-    blcklstCheck = tk.Checkbutton(frame4, text = "Use Blacklist", variable = useBlacklist, onvalue = True, offvalue = False)
+    blcklstCheck = tk.Checkbutton(frame1, text = "Use Blacklist", variable = useBlacklist, onvalue = True, offvalue = False)
     blcklstCheck.grid(row = 3, column = 1, padx = 10, pady = 5, sticky = 'nw')
 
     #save_btn = ttk.Button(topframe, text= 'Save', command = lambda:web.save(username.get(), password.get()), width = 15)
@@ -211,3 +211,14 @@ def create_gui(window):
     # listText.grid(row = 0, column = 0, columnspan = 2, padx = 10, pady = 5, sticky = 'nw')
     # saveBtn = ttk.Button(listFrame, text = "Save", width = 15, )
     # saveBtn.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')
+
+    ## Info Tab
+    frame3 = ttk.Frame(tabs, width = 400, height = 280)
+    frame3.grid(row = 0, column = 4, padx = 10, pady = 5, sticky = 'n')
+    tabs.add(frame3, text = 'Info')
+
+    verLabel = tk.Label(frame3, text = f"Version {appVer}")
+    verLabel.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'nw')
+
+    copyLabel = tk.Label(frame3, text = "Copyright 2024 Ethan Wiens")
+    copyLabel.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')

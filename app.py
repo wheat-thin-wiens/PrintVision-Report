@@ -28,5 +28,5 @@ elif ope == "Darwin":
 ## Running the Program
 if __name__ == '__main__':
     funk.checkVersion(appVer)
-    funk.create_gui(root)
+    funk.create_gui(root, appVer)
     root.mainloop()

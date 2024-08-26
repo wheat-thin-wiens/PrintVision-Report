@@ -18,7 +18,6 @@ def checkVersion(appVer):
             with open('printvision.json', 'r') as file:
                 data = json.load(file)
                 ver = data.get('Version')
-                print(ver)
         
             if ver == None:
                 print('Version not stored in JSON')
