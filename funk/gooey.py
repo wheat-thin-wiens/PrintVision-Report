@@ -213,12 +213,12 @@ def create_gui(window, appVer):
     # saveBtn.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
     ## Info Tab
-    frame3 = ttk.Frame(tabs, width = 400, height = 280)
-    frame3.grid(row = 0, column = 4, padx = 10, pady = 5, sticky = 'n')
-    tabs.add(frame3, text = 'Info')
+    frame4 = ttk.Frame(tabs, width = 400, height = 280)
+    frame4.grid(row = 0, column = 4, padx = 10, pady = 5, sticky = 'n')
+    tabs.add(frame4, text = 'Info')
 
-    verLabel = tk.Label(frame3, text = f"Version {appVer}")
+    verLabel = tk.Label(frame4, text = f"Version {appVer}")
     verLabel.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
-    copyLabel = tk.Label(frame3, text = "Copyright 2024 Ethan Wiens")
+    copyLabel = tk.Label(frame4, text = "Copyright 2024 Ethan Wiens")
     copyLabel.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')
