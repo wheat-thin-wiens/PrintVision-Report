@@ -22,6 +22,7 @@ elif ope == "Darwin":
     root.geometry('525x365')
 
 root.title("PrintVision Report")
+root.resizable(0, 0)
 root.iconbitmap(os.path.join(basedir, 'printing.ico'))
 
 ## Running the Program
