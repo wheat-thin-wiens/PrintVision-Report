@@ -179,9 +179,14 @@ def create_gui(window):
             theList = data.get('Blacklist')
             blackVar = tk.StringVar(value = ', '.join(theList))
     except ValueError:
+        # JSON is present but contents are empty
         print("Blacklist not saved.")
         blackVar = tk.StringVar(value = '')
     except FileNotFoundError:
+        blackVar = tk.StringVar(value = '')
+    except TypeError:
+        # JSON is present but blacklist not present, json.load() returns None, which is not iterable
+        print('Blacklist not saved')
         blackVar = tk.StringVar(value = '')
 
     editFrame = ttk.LabelFrame(frame3, text = 'Edit')

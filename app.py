@@ -1,6 +1,6 @@
 # PrintVision Report Parser by Ethan Wiens
 import funk
-import os
+import os, os.path
 import platform
 import tkinter as tk
 
@@ -24,7 +24,6 @@ if ope == "Windows":
     root.geometry("365x300")
 elif ope == "Darwin":
     root.geometry('525x365')
-
 
 ## Running the Program
 if __name__ == '__main__':
