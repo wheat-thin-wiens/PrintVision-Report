@@ -2,12 +2,13 @@ from . import blacklist
 import csv
 import os, os.path
 import platform
+import tkinter as tk
 from tkinter import filedialog as fd, messagebox
 
 global ope
 ope = platform.system()
 
-def open_file(location, hValue, cValue, blist):
+def open_file(location, hValue, cValue, blist, fileVar, outVar):
     file_chosen = False
 
     while not file_chosen:
@@ -22,11 +23,12 @@ def open_file(location, hValue, cValue, blist):
 
         if len(file) > 0:
             file_chosen = True
-            which_csv(file, location, hValue, cValue, blist)
+            fileVar.set(os.path.basename(file))
+            which_csv(file, location, hValue, cValue, blist, outVar)
         else:
             continue
 
-def which_csv(file, location, hValue, cValue, blist):
+def which_csv(file, location, hValue, cValue, blist, outVar):
     #os.chdir('/Users/ethanwiens/Downloads')
     os.chdir('C:/Users/Public')
 
@@ -38,6 +40,7 @@ def which_csv(file, location, hValue, cValue, blist):
     if location == 'Hospital':
         print('Hospital Results:')
         csv_report(file, '10.200', hValue, blist)
+        print('\nCSC Results:')
         csv_report(file, '10.205', hValue, blist)
         print('\n')
     elif location == 'Clinic':
@@ -47,6 +50,7 @@ def which_csv(file, location, hValue, cValue, blist):
     elif location == 'All':
         print('Hospital Results:')
         csv_report(file, '10.200', hValue, blist)
+        print('\nCSC Results:')
         csv_report(file, '10.205', hValue, blist)
         print('\nClinic Results:')
         csv_report(file, '10.210', cValue, blist)
@@ -61,6 +65,7 @@ def which_csv(file, location, hValue, cValue, blist):
             
             if len(outLocation) > 0:
                 os.replace('C:/Users/Public/report.csv', f"{outLocation}/report.csv")
+                outVar.set(outLocation)
             else:
                 os.remove("C:/Users/Public/report.csv")
             saved = True
@@ -72,6 +77,8 @@ def which_csv(file, location, hValue, cValue, blist):
     view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
     if view:
         os.system(f"start excel.exe {outLocation}/report.csv")
+
+
 
 def csv_report(file, IP, value, blist):
     row_count = 0

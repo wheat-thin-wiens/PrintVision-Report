@@ -156,7 +156,12 @@ def create_gui(window, appVer):
     destination_label = tk.Label(fileFrame, textvariable = outVar, width = 23, anchor = 'w')
     destination_label.grid(row = 4, column = 1, padx = 10, pady = 5, sticky = 'nw')
     
-    openrunBtn = ttk.Button(frame2, text = "Open and Run", width = 15, command = lambda:spreadsheet.open_file(location_dropdown.get(), int(hsptlValue_entry.get()), int(clncValue_entry.get()), csvuseBlacklist.get()))
+    openrunBtn = ttk.Button(
+        frame2, 
+        text = "Open and Run",
+        width = 15,
+        command = lambda:spreadsheet.open_file(location_dropdown.get(), int(hsptlValue_entry.get()), int(clncValue_entry.get()), csvuseBlacklist.get(), fileVar, outVar)
+    )
     openrunBtn.grid(row = 5, column = 0, padx = 10, pady = 5, sticky = 'w')
 
     csvblcklstCheck = tk.Checkbutton(frame2, text = "Use Blacklist", variable = csvuseBlacklist, onvalue = True, offvalue = False)
