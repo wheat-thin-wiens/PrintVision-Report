@@ -160,7 +160,14 @@ def create_gui(window, appVer):
         frame2, 
         text = "Open and Run",
         width = 15,
-        command = lambda:spreadsheet.open_file(location_dropdown.get(), int(hsptlValue_entry.get()), int(clncValue_entry.get()), csvuseBlacklist.get(), fileVar, outVar)
+        command = lambda:spreadsheet.open_file(
+            location_dropdown.get(),
+            int(hsptlValue_entry.get()),
+            int(clncValue_entry.get()),
+            csvuseBlacklist.get(),
+            fileVar,
+            outVar
+        )
     )
     openrunBtn.grid(row = 5, column = 0, padx = 10, pady = 5, sticky = 'w')
 

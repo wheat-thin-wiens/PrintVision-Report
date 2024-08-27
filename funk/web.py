@@ -18,16 +18,17 @@ def login(username, password, hValue, cValue, location, blist):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless = True, slow_mo=0)
         page = browser.new_page()
+
         page.goto(pv_login)
         page.fill('input#txtUserName', username)
         page.fill('input#txtPassword', password)
         page.click('input#cmdLogin')
 
         page.goto(report_url)
-
         report_page = page.inner_html('#content')
         soup = BeautifulSoup(report_page, 'html.parser')
         all_spans = soup.find_all('span')
+        
         list_spans = []
         devicecount = ''
 
@@ -209,7 +210,7 @@ def html_report(soup, hValue, cValue, IP_list, blist):
                     continue
 
     print(f'Rows Added: {row_count}')
-    print('\n')
+
     saved = False
     while not saved:
         try:

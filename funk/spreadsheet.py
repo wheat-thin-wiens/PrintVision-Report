@@ -40,19 +40,17 @@ def which_csv(file, location, hValue, cValue, blist, outVar):
     if location == 'Hospital':
         print('Hospital Results:')
         csv_report(file, '10.200', hValue, blist)
-        print('\nCSC Results:')
+        print('CSC Results:')
         csv_report(file, '10.205', hValue, blist)
-        print('\n')
     elif location == 'Clinic':
         print('Clinic Results:')
         csv_report(file, '10.210', cValue, blist)
-        print('\n')
     elif location == 'All':
         print('Hospital Results:')
         csv_report(file, '10.200', hValue, blist)
-        print('\nCSC Results:')
+        print('CSC Results:')
         csv_report(file, '10.205', hValue, blist)
-        print('\nClinic Results:')
+        print('Clinic Results:')
         csv_report(file, '10.210', cValue, blist)
 
     saved = False
