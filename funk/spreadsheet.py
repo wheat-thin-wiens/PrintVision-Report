@@ -119,6 +119,7 @@ def csv_report(file, IP, value, blist):
                             list[6] = ' '
                             
                     except TypeError:
+                        # Check to make sure hValue and cValue are being passed as integers
                         # print('black type error')
                         pass
                     except ValueError:
@@ -135,6 +136,7 @@ def csv_report(file, IP, value, blist):
                             list[7] = ' '
                             
                     except TypeError:
+                        # Check to make sure hValue and cValue are being passed as integers
                         # print('cyan type error')
                         pass
                     except ValueError:
@@ -151,6 +153,7 @@ def csv_report(file, IP, value, blist):
                             list[8] = ' '
                             
                     except TypeError:
+                        # Check to make sure hValue and cValue are being passed as integers
                         # print('magenta type error')
                         pass
                     except ValueError:
@@ -166,6 +169,7 @@ def csv_report(file, IP, value, blist):
                         else:
                             list[9] = ' '
                     except TypeError:
+                        # Check to make sure hValue and cValue are being passed as integers
                         # print('yellow type error')
                         pass
                     except ValueError:

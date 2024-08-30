@@ -1,7 +1,9 @@
 # PrintVision Report Parser by Ethan Wiens
+from datetime import date
 import funk
 import os, os.path
 import platform
+import time
 import tkinter as tk
 
 try:
@@ -14,6 +16,9 @@ except ImportError:
 ope = platform.system()
 basedir = os.path.dirname(__file__)
 appVer = '0.6.0'
+t = time.localtime()
+now = time.strftime("%H:%M:%S", t)
+today = date.today()
 
 root = tk.Tk()
 root.title("PrintVision Report")
@@ -25,8 +30,8 @@ if ope == "Windows":
 elif ope == "Darwin":
     root.geometry('525x365')
 
-## Running the Program
 if __name__ == '__main__':
+    print(f"{today} {now}")
     funk.checkVersion(appVer)
     funk.create_gui(root, appVer)
     root.mainloop()

@@ -124,6 +124,7 @@ def html_report(soup, hValue, cValue, IP_list, blist):
                                 list[6] = ' '
                             
                     except TypeError:
+                        # Check to make sure hValue and cValue are being passed as integers
                         #print('k type error')
                         pass
                     except ValueError:
@@ -145,6 +146,7 @@ def html_report(soup, hValue, cValue, IP_list, blist):
                                 list[7] = ' '
                     
                     except TypeError:
+                        # Check to make sure hValue and cValue are being passed as integers
                         #print('c type error')
                         pass
                     except ValueError:
@@ -165,6 +167,7 @@ def html_report(soup, hValue, cValue, IP_list, blist):
                                 list[8] = ' '
                     
                     except TypeError:
+                        # Check to make sure hValue and cValue are being passed as integers
                         #print('m type error')
                         pass
                     except ValueError:
@@ -186,6 +189,7 @@ def html_report(soup, hValue, cValue, IP_list, blist):
                                 list[9] = ' '
                     
                     except TypeError:
+                        # Check to make sure hValue and cValue are being passed as integers
                         #print('y type error')
                         pass
                     except ValueError:
