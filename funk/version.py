@@ -5,7 +5,7 @@ import platform
 global ope 
 ope = platform.system()
 
-def checkVersion(appVer):
+def checkVersion(appVer: str):
     if ope == "Windows":
         os.chdir('C:/Users/Public')
 
@@ -21,15 +21,11 @@ def checkVersion(appVer):
         
             if ver == None:
                 print('Version not stored in JSON')
-                
-                with open('printvision.json', 'r') as file:
-                    data = json.load(file)
-                    data.update(verDick)
-                with open('printvision.json', 'w') as file:
-                    json.dump(data, file, indent = 4)
+                update_app(appVer, verDick)
 
             elif ver != appVer:
                 print('Version does not match')
+                # update_app(appVer, verDick)
                 return
             
             elif ver == appVer:
@@ -43,3 +39,16 @@ def checkVersion(appVer):
     else:
         with open('printvision.json', 'x') as file:
             json.dump(verDick, file, indent = 4)
+
+def update_app(appVer: str, verDick: dict):
+    if ope == "Windows":
+        os.chdir("C:/Users/Public")
+
+    with open('printvision.json', 'r') as file:
+        data = json.load(file)
+        data.update(verDick)
+    
+    with open('printvision.json', 'w') as file:
+        json.dump(data, file, indent = 4)
+
+    print(f'Version updated to {appVer}')
