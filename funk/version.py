@@ -31,6 +31,7 @@ def checkVersion(appVer: str):
             elif ver == appVer:
                 print('Version matches')
                 return
+
         except ValueError:
             # JSON is present but contents are empty
             with open('printvision.json', 'x') as file:

@@ -1,8 +1,12 @@
 import json
 import os, os.path
+import platform
 from . import blacklist, spreadsheet, web
 import tkinter as tk
 from tkinter import ttk
+
+global ope
+ope = platform.system()
 
 def create_gui(window, appVer):
 # Tabbed UI
@@ -18,7 +22,9 @@ def create_gui(window, appVer):
     useBlacklist = tk.BooleanVar()
     
     try:
-        os.chdir('C:/Users/Public')
+        if ope == "Windows":
+            os.chdir('C:/Users/Public')
+
         with open('printvision.json') as file:
             data = json.load(file)
             username = tk.StringVar(value = data.get('Username'))
