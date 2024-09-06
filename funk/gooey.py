@@ -1,12 +1,6 @@
-import json
-import os, os.path
-import platform
-from . import blacklist, spreadsheet, web
+from . import blacklist, spreadsheet, web, readwriteJSON
 import tkinter as tk
 from tkinter import ttk
-
-global ope
-ope = platform.system()
 
 def create_gui(window, appVer):
 # Tabbed UI
@@ -20,24 +14,10 @@ def create_gui(window, appVer):
     html_hsptlValue = tk.StringVar(value = '5')
     html_clncValue = tk.StringVar(value = '10')
     useBlacklist = tk.BooleanVar()
+
+    username = tk.StringVar(value = readwriteJSON.readJSON("Username"))
+    password = tk.StringVar(value = readwriteJSON.readJSON("Password"))
     
-    try:
-        if ope == "Windows":
-            os.chdir('C:/Users/Public')
-
-        with open('printvision.json') as file:
-            data = json.load(file)
-            username = tk.StringVar(value = data.get('Username'))
-            password = tk.StringVar(value = data.get('Password'))
-    except ValueError:
-        print('Credentials not saved')
-        username = tk.StringVar(value = '')
-        password = tk.StringVar(value = '')
-    except FileNotFoundError:
-        print('File not found')
-        username = tk.StringVar(value = '')
-        password = tk.StringVar(value = '')
-
     frame1 = ttk.Frame(tabs, width = 400, height = 280)
     frame1.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'n')
     tabs.add(frame1, text = 'HTML')
@@ -196,23 +176,7 @@ def create_gui(window, appVer):
     tabs.add(frame3, text = "Blacklist")
 
     global blackVar
-    
-    try:
-        os.chdir('C:/Users/Public')
-        with open('printvision.json') as file:
-            data = json.load(file)
-            theList = data.get('Blacklist')
-            blackVar = tk.StringVar(value = ', '.join(theList))
-    except ValueError:
-        # JSON is present but contents are empty
-        print("Blacklist not saved.")
-        blackVar = tk.StringVar(value = '')
-    except FileNotFoundError:
-        blackVar = tk.StringVar(value = '')
-    except TypeError:
-        # JSON is present but blacklist not present, json.load() returns None, which is not iterable
-        print('Blacklist not saved')
-        blackVar = tk.StringVar(value = '')
+    blackVar = tk.StringVar(value = (', ').join(readwriteJSON.readJSON("Blacklist")))
 
     editFrame = ttk.LabelFrame(frame3, text = 'Edit')
     editFrame.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'nw')

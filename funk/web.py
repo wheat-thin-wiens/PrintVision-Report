@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
-from . import blacklist
+from . import blacklist, readwriteJSON
 import csv
-import json
 import os, os.path
 import platform
 from playwright.sync_api import sync_playwright
@@ -11,7 +10,7 @@ from tkinter import filedialog as fd, messagebox
 global ope
 ope = platform.system()
 
-def login(username, password, hValue, cValue, location, blist):
+def login(username, password, hValue: int, cValue: int, location, blist):
     pv_login = 'https://loffler.printfleet.com/login.aspx'
     report_url = 'https://loffler.printfleet.com/reportDetail.aspx?reportId=0afcca2e-f240-4ac3-ae81-438da7176e99'
 
@@ -53,7 +52,8 @@ def login(username, password, hValue, cValue, location, blist):
         report = page.inner_html('#content')
         soup = BeautifulSoup(report, 'html.parser')
 
-    save(username, password)    
+    readwriteJSON.writeJSON({'Username': username})
+    readwriteJSON.writeJSON({'Password': password})
     which_html(soup, hValue, cValue, location, blist)
 
 def which_html(soup, hValue, cValue, location, blist):
@@ -238,44 +238,3 @@ def html_report(soup, hValue, cValue, IP_list, blist):
     view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
     if view:
         os.system(f"start excel.exe {outLocation}/report.csv") # type: ignore
-
-def save(username, password):
-    if ope == 'Windows':
-        os.chdir('C:/Users/Public')
-    elif ope == 'Darwin':
-        os.chdir('/Users/ethanwiens/dev/PrintVision-Report')
-
-    credentials = {
-        'Username': username,
-        'Password': password
-    }
-
-    try:
-        with open('printvision.json', 'r') as file:
-            data = json.load(file)
-            data.update(credentials)
-        with open('printvision.json', 'w') as file:
-            json.dump(data, file, indent = 4)
-    except FileNotFoundError:
-        with open('printvision.json', 'x') as file:
-            json.dump(credentials, file, indent = 4)
-
-# def checkBlacklist(line):
-#     if ope == 'Windows':
-#         os.chdir('C:/Users/Public')
-#     elif ope == 'Darwin':
-#         os.chdir('/Users/ethanwiens/dev/PrintVision-Report')
-
-#     with open('printvision.json', 'r') as file:
-#         data = json.load(file)
-#         theList = data.get('Blacklist')
-
-#     for x in theList:
-#         if x in line:
-#             print(f'Found blacklisted item: {line[3]}')
-#             line = []
-#             return line
-#         else:
-#             continue
-#     return line
-    
