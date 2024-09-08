@@ -74,7 +74,7 @@ def html_report(soup, hValue, cValue, IP_list, blist):
     if os.path.isfile('report.csv'):
         os.remove('report.csv')
         open('report.csv', 'x')
-        print('file created')
+        print('File created')
 
     with open('report.csv', 'a', newline = '') as csvfile:
         spamwriter = csv.writer(
@@ -91,12 +91,9 @@ def html_report(soup, hValue, cValue, IP_list, blist):
         spamwriter.writerow(columns)
         row_count = 0
 
-        #tbody is the table containing the entire report
         body = soup.find('tbody')
         for ip in IP_list:
-            #tr is each row in the report, effectively each printer
             for x in body.find_all('tr'):
-                #td is each piece of data, or column, for an individual printer
                 rows = x.find_all('td')
                 list = []
                 for y in rows:
@@ -108,93 +105,16 @@ def html_report(soup, hValue, cValue, IP_list, blist):
                 if ip in list[2]:
                     toners = []
 
-                    try:
-                        black = list[6].strip('%')
-                        
-                        if ip == '10.210':
-                            if int(black) <= cValue:
-                                toners.append(black)
-                            elif int(black) > cValue:
-                                list[6] = ' '
-                            
-                        else:
-                            if int(black) <= hValue:
-                                toners.append(black)
-                            elif int(black) > hValue:
-                                list[6] = ' '
-                            
-                    except TypeError:
-                        # Check to make sure hValue and cValue are being passed as integers
-                        #print('k type error')
-                        pass
-                    except ValueError:
-                        #print('k value error')
-                        pass
-
-                    try:
-                        cyan = list[7].strip('%')
-
-                        if ip == '10.210':
-                            if int(cyan) <= cValue:
-                                toners.append(cyan)
-                            elif int(cyan) > cValue:
-                                list[7] = ' '
-                        else:
-                            if int(cyan) <= hValue:
-                                toners.append(cyan)
-                            elif int(cyan) > hValue:
-                                list[7] = ' '
-                    
-                    except TypeError:
-                        # Check to make sure hValue and cValue are being passed as integers
-                        #print('c type error')
-                        pass
-                    except ValueError:
-                        #print('c value error')
-                        pass
-
-                    try:
-                        magenta = list[8].strip('%')
-                        if ip == '10.210':
-                            if int(magenta) <= cValue:
-                                toners.append(magenta)
-                            elif int(magenta) > cValue:
-                                list[8] = ' '
-                        else:
-                            if int(magenta) <= hValue:
-                                toners.append(magenta)
-                            elif int(magenta) > hValue:
-                                list[8] = ' '
-                    
-                    except TypeError:
-                        # Check to make sure hValue and cValue are being passed as integers
-                        #print('m type error')
-                        pass
-                    except ValueError:
-                        #print('m value error')
-                        pass
-
-                    try:
-                        yellow = list[9].strip('%')
-
-                        if ip == '10.210':
-                            if int(yellow) <= cValue:
-                                toners.append(yellow)
-                            elif int(yellow) > cValue:
-                                list[9] = ' '
-                        else:
-                            if int(yellow) <= hValue:
-                                toners.append(yellow)
-                            elif int(yellow) > hValue:
-                                list[9] = ' '
-                    
-                    except TypeError:
-                        # Check to make sure hValue and cValue are being passed as integers
-                        #print('y type error')
-                        pass
-                    except ValueError:
-                        #print('y value error')
-                        pass
+                    if ip =='10.210':
+                        black = htmlToner(list[6], cValue, toners)
+                        cyan = htmlToner(list[7], cValue, toners)
+                        magenta = htmlToner(list[8], cValue, toners)
+                        yellow = htmlToner(list[9], cValue, toners)
+                    else:
+                        black = htmlToner(list[6], hValue, toners)
+                        cyan = htmlToner(list[7], hValue, toners)
+                        magenta = htmlToner(list[8], hValue, toners)
+                        yellow = htmlToner(list[9], hValue, toners)
 
                     if len(toners) > 0:
                         if blist:
@@ -227,7 +147,7 @@ def html_report(soup, hValue, cValue, IP_list, blist):
                 if ope == "Windows":
                     os.replace('C:/Users/Public/report.csv', f"{outLocation}/report.csv")
                 elif ope == "Darwin":
-                    os.replace('/Users/ethanwiens/Downloads/report.csv', f"{outLocaton}/report.csv") # type: ignore
+                    os.replace('/Users/ethanwiens/Downloads/report.csv', f"{outLocation}/report.csv") # type: ignore
             else:
                 os.remove("C:/Users/Public/report.csv")
             saved = True
@@ -238,3 +158,18 @@ def html_report(soup, hValue, cValue, IP_list, blist):
     view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
     if view:
         os.system(f"start excel.exe {outLocation}/report.csv") # type: ignore
+
+def htmlToner(toner: str, value: int, tonerList: list):
+    try:    
+        toner = toner.strip("%")
+
+        if int(toner) <= value:
+            tonerList.append(toner)
+            return f"{toner}%"
+        else:
+            return ''
+
+    except ValueError:
+        return
+    except TypeError:
+        return

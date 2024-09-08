@@ -49,15 +49,21 @@ def writeJSON(newData: dict):
         case _:
             print("Are you even using a computer?")
 
-    if os.path.isfile(fileName):
-        with open(fileName, 'r')as file:
-            oldData = json.load(file)
-            oldData.update(newData)
+    try:
+        if os.path.isfile(fileName):
+            with open(fileName, 'r') as file:
+                oldData = json.load(file)
+                oldData.update(newData)
 
+            with open(fileName, 'w') as file:
+                json.dump(oldData, file, indent = 4)
+                print(f"Successfully saved {dataName}")
+        
+        else:
+            open(fileName, 'x')
+            writeJSON(newData)
+
+    except ValueError:
         with open(fileName, 'w') as file:
-            json.dump(oldData, file, indent = 4)
-            print(f"Successfully saved {dataName}")
+            json.dump(newData, file, indent = 4)
     
-    else:
-        open(fileName, 'x')
-        writeJSON(newData)

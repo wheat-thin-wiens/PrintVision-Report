@@ -9,7 +9,6 @@ def checkVersion(appVer: str):
     
     match savedVer:
         case None:
-            print("Version not stored in JSON")
             readwriteJSON.writeJSON(verDick)
             return
         case '':

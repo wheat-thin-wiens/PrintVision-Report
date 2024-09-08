@@ -29,8 +29,16 @@ def open_file(location, hValue, cValue, blist, fileVar, outVar):
             continue
 
 def which_csv(file, location, hValue, cValue, blist, outVar):
-    #os.chdir('/Users/ethanwiens/Downloads')
-    os.chdir('C:/Users/Public')
+    match ope:
+        case "Windows":
+            initDir = "C:/Users/Public"
+            os.chdir(initDir)
+        case "Darwin":
+            initDir = "/Users/ethanwiens/dev/PrintVision-Report"
+            os.chdir(initDir)
+        case "Linux":
+            initDir = "/Users/ethanwiens/dev/PrintVision-Report"
+            os.chdir(initDir)
 
     if os.path.isfile('report.csv'):
         os.remove('report.csv')
@@ -62,10 +70,10 @@ def which_csv(file, location, hValue, cValue, blist, outVar):
         )
             
             if len(outLocation) > 0:
-                os.replace('C:/Users/Public/report.csv', f"{outLocation}/report.csv")
+                os.replace(f"{initDir}/report.csv", f"{outLocation}/report.csv")  #type: ignore
                 outVar.set(outLocation)
             else:
-                os.remove("C:/Users/Public/report.csv")
+                os.remove(f"{initDir}/report.csv")  #type: ignore
             saved = True
             break
         except PermissionError:
@@ -74,7 +82,7 @@ def which_csv(file, location, hValue, cValue, blist, outVar):
     
     view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
     if view:
-        os.system(f"start excel.exe {outLocation}/report.csv")
+        os.system(f"start excel.exe {outLocation}/report.csv")  #type: ignore
 
 
 
@@ -108,73 +116,10 @@ def csv_report(file, IP, value, blist):
                 if IP in list[2]:
                     toners = []
 
-                    try:
-                        black = list[6].replace('"', '')
-                        black = black.strip('%')
-                        black = int(black)
-                        if black <= value:
-                            list[6] = f'{black}%'
-                            toners.append(black)
-                        else:
-                            list[6] = ' '
-                            
-                    except TypeError:
-                        # Check to make sure hValue and cValue are being passed as integers
-                        # print('black type error')
-                        pass
-                    except ValueError:
-                        # print('black value error')
-                        pass
-
-                    try:
-                        cyan = list[7].replace('"', '')
-                        cyan = int(cyan.strip('%'))
-                        if cyan <= value:
-                            list[7] = f'{cyan}%'
-                            toners.append(cyan)
-                        else:
-                            list[7] = ' '
-                            
-                    except TypeError:
-                        # Check to make sure hValue and cValue are being passed as integers
-                        # print('cyan type error')
-                        pass
-                    except ValueError:
-                        # print('cyan value error')
-                        pass
-
-                    try:
-                        magenta = list[8].replace('"', '')
-                        magenta = int(magenta.strip('%'))
-                        if magenta <= value:
-                            list[8] = f'{magenta}%'
-                            toners.append(magenta)
-                        else:
-                            list[8] = ' '
-                            
-                    except TypeError:
-                        # Check to make sure hValue and cValue are being passed as integers
-                        # print('magenta type error')
-                        pass
-                    except ValueError:
-                        # print('magenta value error')
-                        pass
-
-                    try:
-                        yellow = list[9].replace('"', '')
-                        yellow = int(yellow.strip('%'))
-                        if yellow <= value:
-                            list[9] = f'{yellow}%'
-                            toners.append(yellow)
-                        else:
-                            list[9] = ' '
-                    except TypeError:
-                        # Check to make sure hValue and cValue are being passed as integers
-                        # print('yellow type error')
-                        pass
-                    except ValueError:
-                        # print('yellow value error')
-                        pass
+                    black = csvToner(list[6], value, toners)
+                    cyan = csvToner(list[7], value, toners)
+                    magenta = csvToner(list[8], value, toners)
+                    yellow = csvToner(list[9], value, toners)
 
                     if len(toners) > 0:
                         if blist:
@@ -194,3 +139,18 @@ def csv_report(file, IP, value, blist):
                     continue
         
     print(f'Rows added: {row_count}')
+
+def csvToner(toner: str, value: int, tonerList: list):
+    toner = toner.replace('"', '').strip("%")
+
+    try:
+        if int(toner) <= value:
+            tonerList.append(toner)
+            return f"{toner}%"
+        else:
+            return ""
+
+    except TypeError:
+        return
+    except ValueError:
+        return
