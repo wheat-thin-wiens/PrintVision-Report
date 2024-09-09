@@ -104,30 +104,32 @@ def html_report(soup, hValue, cValue, IP_list, blist):
                 
                 if ip in list[2]:
                     toners = []
+                    black = list[6]
+                    cyan = list[7]
+                    magenta = list[8]
+                    yellow = list[9]
 
                     if ip =='10.210':
-                        black = htmlToner(list[6], cValue, toners)
-                        cyan = htmlToner(list[7], cValue, toners)
-                        magenta = htmlToner(list[8], cValue, toners)
-                        yellow = htmlToner(list[9], cValue, toners)
+                        list[6] = htmlToner(black, cValue, toners)
+                        list[7] = htmlToner(cyan, cValue, toners)
+                        list[8] = htmlToner(magenta, cValue, toners)
+                        list[9] = htmlToner(yellow, cValue, toners)
                     else:
-                        black = htmlToner(list[6], hValue, toners)
-                        cyan = htmlToner(list[7], hValue, toners)
-                        magenta = htmlToner(list[8], hValue, toners)
-                        yellow = htmlToner(list[9], hValue, toners)
+                        list[6] = htmlToner(black, hValue, toners)
+                        list[7] = htmlToner(cyan, hValue, toners)
+                        list[8] = htmlToner(magenta, hValue, toners)
+                        list[9] = htmlToner(yellow, hValue, toners)
 
                     if len(toners) > 0:
                         if blist:
                             checkedLine = blacklist.checkBlacklist(list)
                             if len(checkedLine) > 1:
                                 row_count += 1
-                                # print(f'\rRows Added: ({row_count})', end = '')
                                 spamwriter.writerow(checkedLine)
                             else:
                                 continue
                         elif not blist:
                             row_count += 1
-                            # print(f'\rRows Added: ({row_count})', end = '')
                             spamwriter.writerow(list)
                 
                 else:
@@ -167,7 +169,7 @@ def htmlToner(toner: str, value: int, tonerList: list):
             tonerList.append(toner)
             return f"{toner}%"
         else:
-            return ''
+            return ' '
 
     except ValueError:
         return
