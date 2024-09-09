@@ -1,6 +1,11 @@
 from . import blacklist, spreadsheet, web, readwriteJSON
+import os, os.path
+import platform
 import tkinter as tk
-from tkinter import ttk
+from tkinter import filedialog as fd, ttk, messagebox
+
+global ope
+ope = platform.system()
 
 def create_gui(window, appVer):
 # Tabbed UI
@@ -211,3 +216,28 @@ def create_gui(window, appVer):
 
     copyLabel = tk.Label(frame4, text = "Copyright 2024 Ethan Wiens")
     copyLabel.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')
+
+def saveDialog(initDir):
+    saved = False
+    while not saved:
+        try:
+            outLocation = fd.askdirectory(
+                title = "Save new report",
+                initialdir = "/"
+        )
+            
+            if len(outLocation) > 0:
+                os.replace(f'{initDir}/report.csv', f"{outLocation}/report.csv")
+                print(f"File saved in {outLocation}")
+            else:
+                os.remove("C:/Users/Public/report.csv")
+
+            saved = True
+
+        except PermissionError:
+            messagebox.showwarning("Unable to save", "If a previous report is still open, make sure you close it before running another report.")
+            continue
+    
+    view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
+    if view:
+        os.system(f"start excel.exe {outLocation}/report.csv") # type: ignore

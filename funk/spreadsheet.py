@@ -1,9 +1,9 @@
-from . import blacklist
+from . import blacklist, gooey
 import csv
 import os, os.path
 import platform
 import tkinter as tk
-from tkinter import filedialog as fd, messagebox
+from tkinter import filedialog as fd
 
 global ope
 ope = platform.system()
@@ -61,30 +61,7 @@ def which_csv(file, location, hValue, cValue, blist, outVar):
         print('Clinic Results:')
         csv_report(file, '10.210', cValue, blist)
 
-    saved = False
-    while not saved:
-        try:
-            outLocation = fd.askdirectory(
-            title = "Save new report",
-            initialdir = "/"
-        )
-            
-            if len(outLocation) > 0:
-                os.replace(f"{initDir}/report.csv", f"{outLocation}/report.csv")  #type: ignore
-                outVar.set(outLocation)
-            else:
-                os.remove(f"{initDir}/report.csv")  #type: ignore
-            saved = True
-            break
-        except PermissionError:
-            messagebox.showwarning("Unable to save", "If a previous report is still open, make sure you close it before running another report.")
-            continue
-    
-    view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
-    if view:
-        os.system(f"start excel.exe {outLocation}/report.csv")  #type: ignore
-
-
+    gooey.saveDialog(initDir)
 
 def csv_report(file, IP, value, blist):
     row_count = 0
@@ -115,11 +92,15 @@ def csv_report(file, IP, value, blist):
 
                 if IP in list[2]:
                     toners = []
+                    black = list[6]
+                    cyan = list[7]
+                    magenta = list[8]
+                    yellow = list[9]
 
-                    black = csvToner(list[6], value, toners)
-                    cyan = csvToner(list[7], value, toners)
-                    magenta = csvToner(list[8], value, toners)
-                    yellow = csvToner(list[9], value, toners)
+                    list[6] = csvToner(black, value, toners)
+                    list[7] = csvToner(cyan, value, toners)
+                    list[8] = csvToner(magenta, value, toners)
+                    list[9] = csvToner(yellow, value, toners)
 
                     if len(toners) > 0:
                         if blist:
@@ -151,6 +132,6 @@ def csvToner(toner: str, value: int, tonerList: list):
             return ""
 
     except TypeError:
-        return
+        return ' '
     except ValueError:
-        return
+        return ' '

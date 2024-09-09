@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from . import blacklist, readwriteJSON
+from . import blacklist, readwriteJSON, gooey
 import csv
 import os, os.path
 import platform
@@ -42,7 +42,6 @@ def login(username, password, hValue: int, cValue: int, location, blist):
                 print(f'Found device count: {devicecount}')
                 break
             else:
-                # print('still looking')
                 continue
 
         page.get_by_role("img", name="@").click()
@@ -66,15 +65,17 @@ def which_html(soup, hValue, cValue, location, blist):
         html_report(soup, hValue, cValue, ['10.210'], blist)
 
 def html_report(soup, hValue, cValue, IP_list, blist):
-    if ope == 'Windows':
-        os.chdir('C:/Users/Public')
-    elif ope == 'Darwin':
-        os.chdir('/Users/ethanwiens/Downloads')
-    
+    match ope:
+        case "Windows":
+            initDir = "C:/Users/Public"
+            os.chdir(initDir)
+        case "Darwin":
+            initDir = "/Users/ethanwiens/Downloads"
+            os.chdir(initDir)
+
     if os.path.isfile('report.csv'):
         os.remove('report.csv')
         open('report.csv', 'x')
-        print('File created')
 
     with open('report.csv', 'a', newline = '') as csvfile:
         spamwriter = csv.writer(
@@ -137,29 +138,7 @@ def html_report(soup, hValue, cValue, IP_list, blist):
 
     print(f'Rows Added: {row_count}')
 
-    saved = False
-    while not saved:
-        try:
-            outLocation = fd.askdirectory(
-            title = "Save new report",
-            initialdir = "/"
-        )
-            
-            if len(outLocation) > 0:
-                if ope == "Windows":
-                    os.replace('C:/Users/Public/report.csv', f"{outLocation}/report.csv")
-                elif ope == "Darwin":
-                    os.replace('/Users/ethanwiens/Downloads/report.csv', f"{outLocation}/report.csv") # type: ignore
-            else:
-                os.remove("C:/Users/Public/report.csv")
-            saved = True
-        except PermissionError:
-            messagebox.showwarning("Unable to save", "If a previous report is still open, make sure you close it before running another report.")
-            continue
-    
-    view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
-    if view:
-        os.system(f"start excel.exe {outLocation}/report.csv") # type: ignore
+    gooey.saveDialog(initDir)
 
 def htmlToner(toner: str, value: int, tonerList: list):
     try:    
@@ -172,6 +151,6 @@ def htmlToner(toner: str, value: int, tonerList: list):
             return ' '
 
     except ValueError:
-        return
+        return ' '
     except TypeError:
-        return
+        return ' '

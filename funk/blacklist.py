@@ -13,8 +13,12 @@ def checkBlacklist(line):
     theList = readwriteJSON.readJSON("Blacklist")
 
     line_copy = []
+
     for x in line:
-        line_copy.append(x.replace('"', ''))
+        if x is None:
+            line_copy.append(" ")
+        else:
+            line_copy.append(x.replace('"', ''))
 
     for x in theList:
         if x in line_copy:
