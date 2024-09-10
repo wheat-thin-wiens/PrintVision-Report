@@ -45,7 +45,7 @@ def which_csv(file, location, hValue, cValue, blist):
         print('file created')
 
     data = readReport(file)
-    writeHeader(data[0])
+    writeCSVHeader(data[0])
 
     if location == 'Hospital':
         csv_report(data, '10.200', hValue, blist)
@@ -133,7 +133,7 @@ def readReport(file):
         data = [x for x in spamreader]
         return data
     
-def writeHeader(header: list):
+def writeCSVHeader(header: list):
     with open('report.csv', 'a', newline = '') as writefile:
         spamwriter = csv.writer(
             writefile,

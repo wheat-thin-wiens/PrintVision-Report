@@ -14,13 +14,18 @@ def login(username, password, hValue: int, cValue: int, location, blist):
     report_url = 'https://loffler.printfleet.com/reportDetail.aspx?reportId=0afcca2e-f240-4ac3-ae81-438da7176e99'
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless = True, slow_mo=0)
+        browser = p.chromium.launch(headless = False, slow_mo=200)
         page = browser.new_page()
 
         page.goto(pv_login)
         page.fill('input#txtUserName', username)
         page.fill('input#txtPassword', password)
         page.click('input#cmdLogin')
+
+        if page.get_by_text("Invalid email address and/or password").is_visible():
+            browser.close()
+            gooey.loginError()
+            return
 
         page.goto(report_url)
         report_page = page.inner_html('#content')
@@ -67,18 +72,18 @@ def which_html(soup, hValue, cValue, location, blist):
         os.remove('report.csv')
         open('report.csv', 'x')
 
-    if location == 'All':
-        writeHeader(soup)
-        html_report(soup, hValue, "10.200", blist)
-        html_report(soup, hValue, "10.205", blist)
-        html_report(soup, cValue, "10.210", blist)
-    elif location == 'Hospital':
-        writeHeader(soup)
-        html_report(soup, hValue, "10.200", blist)
-        html_report(soup, hValue, "10.205", blist)
-    elif location == 'Clinic':
-        writeHeader(soup)
-        html_report(soup, cValue, "10.210", blist)
+    writeHeader(soup)
+
+    match location:
+        case "All":
+            html_report(soup, hValue, "10.200", blist)
+            html_report(soup, hValue, "10.205", blist)
+            html_report(soup, cValue, "10.210", blist)
+        case "Hospital":
+            html_report(soup, hValue, "10.200", blist)
+            html_report(soup, hValue, "10.205", blist)
+        case "Clinic":
+            html_report(soup, cValue, "10.210", blist)
 
     gooey.saveDialog(initDir)
 

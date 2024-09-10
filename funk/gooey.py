@@ -241,3 +241,14 @@ def saveDialog(initDir):
     view = messagebox.askyesno("Report Complete", "Would you like to view the report?")
     if view:
         os.system(f"start excel.exe {outLocation}/report.csv") # type: ignore
+
+def loginError():
+    try:
+        readwriteJSON.removeJSON("Username")
+        readwriteJSON.removeJSON("Password")
+    except KeyError:
+        pass
+
+    username.set(value = '')
+    password.set(value = '')
+    messagebox.showerror("Login Error", "You have entered the wrong credentials. Please try again.")

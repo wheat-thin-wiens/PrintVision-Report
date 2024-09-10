@@ -70,3 +70,28 @@ def writeJSON(newData: dict):
         with open(fileName, 'w') as file:
             json.dump(newData, file, indent = 4)
     
+def removeJSON(data):
+    match ope:
+        case "Windows":
+            initDir = "C:/Users/Public"
+            os.chdir(initDir)
+        case "Darwin":
+            initDir = "/Users/ethanwiens/dev/PrintVision-Report"
+            os.chdir(initDir)
+        case "Linux":
+            initDir = "/Users/ethanwiens/dev/PrintVision-Report"
+            os.chdir(initDir)
+        case _:
+            print("Are you even using a computer?")
+    
+    try:
+        if os.path.isfile(fileName):
+            with open(fileName, 'r') as file:
+                oldData = json.load(file)
+                oldData.pop(data)
+
+            with open(fileName, 'w') as file:
+                json.dump(oldData, file, indent = 4)
+
+    except ValueError:
+        return
