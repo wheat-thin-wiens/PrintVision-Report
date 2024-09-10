@@ -5,7 +5,6 @@ import os, os.path
 import platform
 from playwright.sync_api import sync_playwright
 import re
-from tkinter import filedialog as fd, messagebox
 
 global ope
 ope = platform.system()
@@ -69,16 +68,16 @@ def which_html(soup, hValue, cValue, location, blist):
         open('report.csv', 'x')
 
     if location == 'All':
-        writeHeaders(soup)
+        writeHeader(soup)
         html_report(soup, hValue, "10.200", blist)
         html_report(soup, hValue, "10.205", blist)
         html_report(soup, cValue, "10.210", blist)
     elif location == 'Hospital':
-        writeHeaders(soup)
+        writeHeader(soup)
         html_report(soup, hValue, "10.200", blist)
         html_report(soup, hValue, "10.205", blist)
     elif location == 'Clinic':
-        writeHeaders(soup)
+        writeHeader(soup)
         html_report(soup, cValue, "10.210", blist)
 
     gooey.saveDialog(initDir)
@@ -113,6 +112,8 @@ def html_report(soup, value, IP, blist):
                 list[7] = htmlToner(cyan, value, toners)
                 list[8] = htmlToner(magenta, value, toners)
                 list[9] = htmlToner(yellow, value, toners)
+            else:
+                continue
             
             if len(toners) > 0:
                 if blist:
@@ -137,7 +138,7 @@ def html_report(soup, value, IP, blist):
         case "10.210":
             print(f"Clinics: {row_count}")
 
-def writeHeaders(soup):
+def writeHeader(soup):
     with open('report.csv', 'a', newline = '') as csvfile:
         spamwriter = csv.writer(
             csvfile,
@@ -147,8 +148,8 @@ def writeHeaders(soup):
         )
 
         head = soup.find('thead')
-        columns = [x.text for x in head.find_all('th')]
-        spamwriter.writerow(columns)
+        header = [x.text for x in head.find_all('th')]
+        spamwriter.writerow(header)
 
 def htmlToner(toner: str, value: int, tonerList: list):
     try:    

@@ -45,25 +45,22 @@ def which_csv(file, location, hValue, cValue, blist, outVar):
         open('report.csv', 'x')
         print('file created')
 
+    data = readReport(file)
+    writeHeader(data[0])
+
     if location == 'Hospital':
-        print('Hospital Results:')
-        csv_report(file, '10.200', hValue, blist)
-        print('CSC Results:')
-        csv_report(file, '10.205', hValue, blist)
+        csv_report(data, '10.200', hValue, blist)
+        csv_report(data, '10.205', hValue, blist)
     elif location == 'Clinic':
-        print('Clinic Results:')
-        csv_report(file, '10.210', cValue, blist)
+        csv_report(data, '10.210', cValue, blist)
     elif location == 'All':
-        print('Hospital Results:')
-        csv_report(file, '10.200', hValue, blist)
-        print('CSC Results:')
-        csv_report(file, '10.205', hValue, blist)
-        print('Clinic Results:')
-        csv_report(file, '10.210', cValue, blist)
+        csv_report(data, '10.200', hValue, blist)
+        csv_report(data, '10.205', hValue, blist)
+        csv_report(data, '10.210', cValue, blist)
 
     gooey.saveDialog(initDir)
 
-def csv_report(file, IP, value, blist):
+def csv_report(data: list, IP: str, value: int, blist: bool):
     row_count = 0
 
     with open('report.csv', 'a', newline = '') as writefile:
@@ -74,52 +71,42 @@ def csv_report(file, IP, value, blist):
             quoting = csv.QUOTE_MINIMAL,
         )
 
-        with open(file, newline = '') as readfile:
-            spamreader = csv.reader(readfile, delimiter = ',', quotechar = '|')
+        for row in data:
+            list = [x for x in row]
+            toners = []
+            black = list[6]
+            cyan = list[7]
+            magenta = list[8]
+            yellow = list[9]
 
-            '''
-            K = row[6]
-            C = row[7]
-            M = row[8]
-            Y = row[9]
-            '''
+            if IP in list[2]:
+                list[6] = csvToner(black, value, toners)
+                list[7] = csvToner(cyan, value, toners)
+                list[8] = csvToner(magenta, value, toners)
+                list[9] = csvToner(yellow, value, toners)
 
-            for row in spamreader:
-                list = []
-
-                for x in row:
-                    list.append(x)
-
-                if IP in list[2]:
-                    toners = []
-                    black = list[6]
-                    cyan = list[7]
-                    magenta = list[8]
-                    yellow = list[9]
-
-                    list[6] = csvToner(black, value, toners)
-                    list[7] = csvToner(cyan, value, toners)
-                    list[8] = csvToner(magenta, value, toners)
-                    list[9] = csvToner(yellow, value, toners)
-
-                    if len(toners) > 0:
-                        if blist:
-                            checkedList = blacklist.checkBlacklist(list)
-                            if len(checkedList) > 0:
-                                row_count += 1
-                                # print(f'\rRows Added: ({row_count})', end = '')
-                                spamwriter.writerow(checkedList)
-                            else:
-                                continue
-                        elif not blist:
+                if len(toners) > 0:
+                    if blist:
+                        checkedList = blacklist.checkBlacklist(list)
+                        if len(checkedList) > 0:
                             row_count += 1
-                            # print(f'\rRows Added: ({row_count})', end = '')
-                            spamwriter.writerow(list)
+                            spamwriter.writerow(checkedList)
+                        else:
+                            continue
+                    elif not blist:
+                        row_count += 1
+                        spamwriter.writerow(list)
 
-                else:
-                    continue
-        
-    print(f'Rows added: {row_count}')
+            else:
+                continue
+
+    match IP:
+        case "10.200":    
+            print(f'Hospital: {row_count}')
+        case "10.205":
+            print(f'CSC: {row_count}')
+        case "10.210":
+            print(f"Clinics: {row_count}")           
 
 def csvToner(toner: str, value: int, tonerList: list):
     toner = toner.replace('"', '').strip("%")
@@ -135,3 +122,25 @@ def csvToner(toner: str, value: int, tonerList: list):
         return ' '
     except ValueError:
         return ' '
+
+def readReport(file):
+    with open(file, newline = '') as readfile:
+        spamreader = csv.reader(
+            readfile,
+            delimiter = ',',
+            quotechar = '|'
+        )
+
+        data = [x for x in spamreader]
+        return data
+    
+def writeHeader(header: list):
+    with open('report.csv', 'a', newline = '') as writefile:
+        spamwriter = csv.writer(
+            writefile,
+            delimiter = ',',
+            quotechar = '|',
+            quoting = csv.QUOTE_MINIMAL,
+        )
+
+        spamwriter.writerow(header)
