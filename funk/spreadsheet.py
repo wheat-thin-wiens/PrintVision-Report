@@ -2,13 +2,12 @@ from . import blacklist, gooey
 import csv
 import os, os.path
 import platform
-import tkinter as tk
 from tkinter import filedialog as fd
 
 global ope
 ope = platform.system()
 
-def open_file(location, hValue, cValue, blist, fileVar, outVar):
+def open_file(location, hValue: int, cValue: int, blist: bool, fileVar):
     file_chosen = False
 
     while not file_chosen:
@@ -24,11 +23,11 @@ def open_file(location, hValue, cValue, blist, fileVar, outVar):
         if len(file) > 0:
             file_chosen = True
             fileVar.set(os.path.basename(file))
-            which_csv(file, location, hValue, cValue, blist, outVar)
+            which_csv(file, location, hValue, cValue, blist)
         else:
             continue
 
-def which_csv(file, location, hValue, cValue, blist, outVar):
+def which_csv(file, location, hValue, cValue, blist):
     match ope:
         case "Windows":
             initDir = "C:/Users/Public"

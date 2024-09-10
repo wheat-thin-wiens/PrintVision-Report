@@ -163,8 +163,7 @@ def create_gui(window, appVer):
             int(hsptlValue_entry.get()),
             int(clncValue_entry.get()),
             csvuseBlacklist.get(),
-            fileVar,
-            outVar
+            fileVar
         )
     )
     openrunBtn.grid(row = 5, column = 0, padx = 10, pady = 5, sticky = 'w')
@@ -228,6 +227,7 @@ def saveDialog(initDir):
             
             if len(outLocation) > 0:
                 os.replace(f'{initDir}/report.csv', f"{outLocation}/report.csv")
+                outVar.set(outLocation)
                 print(f"File saved in {outLocation}")
             else:
                 os.remove("C:/Users/Public/report.csv")
