@@ -56,15 +56,6 @@ def login(username, password, hValue: int, cValue: int, location, blist):
     which_html(soup, hValue, cValue, location, blist)
 
 def which_html(soup, hValue, cValue, location, blist):
-
-    if location == 'All':
-        html_report(soup, hValue, cValue, ['10.200', '10.205', '10.210'], blist)
-    elif location == 'Hospital':
-        html_report(soup, hValue, cValue, ['10.200', '10.205'], blist)
-    elif location == 'Clinic':
-        html_report(soup, hValue, cValue, ['10.210'], blist)
-
-def html_report(soup, hValue, cValue, IP_list, blist):
     match ope:
         case "Windows":
             initDir = "C:/Users/Public"
@@ -77,6 +68,22 @@ def html_report(soup, hValue, cValue, IP_list, blist):
         os.remove('report.csv')
         open('report.csv', 'x')
 
+    if location == 'All':
+        writeHeaders(soup)
+        html_report(soup, hValue, "10.200", blist)
+        html_report(soup, hValue, "10.205", blist)
+        html_report(soup, cValue, "10.210", blist)
+    elif location == 'Hospital':
+        writeHeaders(soup)
+        html_report(soup, hValue, "10.200", blist)
+        html_report(soup, hValue, "10.205", blist)
+    elif location == 'Clinic':
+        writeHeaders(soup)
+        html_report(soup, cValue, "10.210", blist)
+
+    gooey.saveDialog(initDir)
+
+def html_report(soup, value, IP, blist):
     with open('report.csv', 'a', newline = '') as csvfile:
         spamwriter = csv.writer(
             csvfile,
@@ -85,60 +92,63 @@ def html_report(soup, hValue, cValue, IP_list, blist):
             quoting = csv.QUOTE_MINIMAL,
         )
 
-        columns = []
-        head = soup.find('thead')
-        for x in head.find_all('th'):
-            columns.append(x.text)
-        spamwriter.writerow(columns)
         row_count = 0
-
         body = soup.find('tbody')
-        for ip in IP_list:
-            for x in body.find_all('tr'):
-                rows = x.find_all('td')
-                list = []
-                for y in rows:
-                    beep = y.text.strip('\n')
-                    beep = beep.strip('\xa0\n')
-                    boop = beep.split('\n')
-                    list.append(boop[0])
-                
-                if ip in list[2]:
-                    toners = []
-                    black = list[6]
-                    cyan = list[7]
-                    magenta = list[8]
-                    yellow = list[9]
+        table = body.find_all("tr")
 
-                    if ip =='10.210':
-                        list[6] = htmlToner(black, cValue, toners)
-                        list[7] = htmlToner(cyan, cValue, toners)
-                        list[8] = htmlToner(magenta, cValue, toners)
-                        list[9] = htmlToner(yellow, cValue, toners)
+        for x in table:
+            rows = x.find_all('td')
+
+            list = [y.text.strip('\n').strip('\xa0\n') for y in rows]
+            toners = []
+
+            ip = list[2]
+            black = list[6]
+            cyan = list[7]
+            magenta = list[8]
+            yellow = list[9]
+
+            if IP in ip:
+                list[6] = htmlToner(black, value, toners)
+                list[7] = htmlToner(cyan, value, toners)
+                list[8] = htmlToner(magenta, value, toners)
+                list[9] = htmlToner(yellow, value, toners)
+            
+            if len(toners) > 0:
+                if blist:
+                    checkedLine = blacklist.checkBlacklist(list)
+
+                    if len(checkedLine) > 1:
+                        row_count += 1
+                        spamwriter.writerow(checkedLine)
+
                     else:
-                        list[6] = htmlToner(black, hValue, toners)
-                        list[7] = htmlToner(cyan, hValue, toners)
-                        list[8] = htmlToner(magenta, hValue, toners)
-                        list[9] = htmlToner(yellow, hValue, toners)
+                        continue
 
-                    if len(toners) > 0:
-                        if blist:
-                            checkedLine = blacklist.checkBlacklist(list)
-                            if len(checkedLine) > 1:
-                                row_count += 1
-                                spamwriter.writerow(checkedLine)
-                            else:
-                                continue
-                        elif not blist:
-                            row_count += 1
-                            spamwriter.writerow(list)
-                
-                else:
-                    continue
+                elif not blist:
+                    row_count += 1
+                    spamwriter.writerow(list)
 
-    print(f'Rows Added: {row_count}')
+    match IP:
+        case "10.200":
+            print(f"Hospital: {row_count}")
+        case "10.205":
+            print(f"CSC: {row_count}")
+        case "10.210":
+            print(f"Clinics: {row_count}")
 
-    gooey.saveDialog(initDir)
+def writeHeaders(soup):
+    with open('report.csv', 'a', newline = '') as csvfile:
+        spamwriter = csv.writer(
+            csvfile,
+            delimiter = ',',
+            quotechar = '|',
+            quoting = csv.QUOTE_MINIMAL,
+        )
+
+        head = soup.find('thead')
+        columns = [x.text for x in head.find_all('th')]
+        spamwriter.writerow(columns)
 
 def htmlToner(toner: str, value: int, tonerList: list):
     try:    

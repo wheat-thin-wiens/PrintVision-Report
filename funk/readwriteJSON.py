@@ -41,11 +41,14 @@ def writeJSON(newData: dict):
 
     match ope:
         case "Windows":
-            os.chdir("C:/Users/Public")
+            initDir = "C:/Users/Public"
+            os.chdir(initDir)
         case "Darwin":
-            os.chdir("/Users/ethanwiens/dev/PrintVision-Report")
+            initDir = "/Users/ethanwiens/dev/PrintVision-Report"
+            os.chdir(initDir)
         case "Linux":
-            os.chdir("/Users/ethanwiens/dev/PrintVision-Report")
+            initDir = "/Users/ethanwiens/dev/PrintVision-Report"
+            os.chdir(initDir)
         case _:
             print("Are you even using a computer?")
 
