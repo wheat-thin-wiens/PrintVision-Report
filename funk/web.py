@@ -14,7 +14,7 @@ def login(username, password, hValue: int, cValue: int, location, blist):
     report_url = 'https://loffler.printfleet.com/reportDetail.aspx?reportId=0afcca2e-f240-4ac3-ae81-438da7176e99'
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless = False, slow_mo=200)
+        browser = p.chromium.launch(headless = True, slow_mo = 0)
         page = browser.new_page()
 
         page.goto(pv_login)
@@ -32,11 +32,7 @@ def login(username, password, hValue: int, cValue: int, location, blist):
         soup = BeautifulSoup(report_page, 'html.parser')
         all_spans = soup.find_all('span')
         
-        list_spans = []
-        devicecount = ''
-
-        for x in all_spans:
-            list_spans.append(x.text)
+        list_spans = [x.text for x in all_spans]
 
         for x in list_spans:
             num = re.compile(r"([\d]{4})")

@@ -8,7 +8,7 @@ global ope
 ope = platform.system()
 
 def create_gui(window, appVer):
-# Tabbed UI
+    ## Tabbed UI
     tabs = ttk.Notebook(window)
     tabs.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'n')
 
@@ -86,10 +86,6 @@ def create_gui(window, appVer):
     blcklstCheck = tk.Checkbutton(frame1, text = "Use Blacklist", variable = useBlacklist, onvalue = True, offvalue = False)
     blcklstCheck.grid(row = 3, column = 1, padx = 10, pady = 5, sticky = 'nw')
 
-    #save_btn = ttk.Button(topframe, text= 'Save', command = lambda:web.save(username.get(), password.get()), width = 15)
-    #save_btn.grid(row = 2, column = 1, padx = 10, pady = 5, sticky = 'e')
-
-    
     ## CSV Tab
     frame2 = ttk.Frame(tabs, width = 400, height = 280)
     frame2.grid(row = 0, column = 1, padx = 10, pady = 5, sticky = 'n')
@@ -171,9 +167,6 @@ def create_gui(window, appVer):
     csvblcklstCheck = tk.Checkbutton(frame2, text = "Use Blacklist", variable = csvuseBlacklist, onvalue = True, offvalue = False)
     csvblcklstCheck.grid(row = 5, column = 1, padx = 10, pady = 5, sticky = 'nw')
 
-    #window.columnconfigure([0, 1], weight = 1)
-    #root.rowconfigure([1, 0], weight = 1)
-
     ## Blacklist Tab
     frame3 = ttk.Frame(tabs, width = 400, height = 280)
     frame3.grid(row = 0, column = 2, padx = 10, pady = 5, sticky = 'n')
@@ -188,22 +181,6 @@ def create_gui(window, appVer):
     blackEntry.grid(row = 0, column = 0, padx = 10, pady = 5, sticky = 'nw')
     saveBtn = ttk.Button(editFrame, text = 'Save', width = 15, command = lambda:blacklist.saveList(blackVar.get()))
     saveBtn.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')
-
-    # editFrame = ttk.LabelFrame(frame3, text = "Edit")
-    # editFrame.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'n')
-    # blackText = ttk.Entry(editFrame, width = 48)
-    # blackText.grid(row = 0, column = 0, columnspan = 2, padx = 10, pady = 5, sticky = 'n')
-    # addBtn = ttk.Button(editFrame, text = 'Add', width = 15, )
-    # addBtn.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')
-    # removeBtn = ttk.Button(editFrame, text = 'Remove', width = 15, )
-    # removeBtn.grid(row = 1, column = 1, padx = 10, pady = 5, sticky = 'nw')
-
-    # listFrame = ttk.LabelFrame(frame3, text = 'List')
-    # listFrame.grid(row = 1, column = 0, columnspan = 3, padx = 10, pady = 5, sticky = 'nw')
-    # listText = ttk.Label(listFrame, textvariable = blackVar, width = 25)
-    # listText.grid(row = 0, column = 0, columnspan = 2, padx = 10, pady = 5, sticky = 'nw')
-    # saveBtn = ttk.Button(listFrame, text = "Save", width = 15, )
-    # saveBtn.grid(row = 1, column = 0, padx = 10, pady = 5, sticky = 'nw')
 
     ## Info Tab
     frame4 = ttk.Frame(tabs, width = 400, height = 280)
