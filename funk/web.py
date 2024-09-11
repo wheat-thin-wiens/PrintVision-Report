@@ -45,7 +45,7 @@ def login(username, password, hValue: int, cValue: int, location, blist):
                 continue
 
         page.get_by_role("img", name="@").click()
-        page.get_by_role("link", name = f"HCMC ({devicecount})").click()
+        page.get_by_role("link", name = f"HCMC ({devicecount})").click() # type: ignore
         page.click('#run')
         page.wait_for_selector('.pfReport')
         report = page.inner_html('#content')
