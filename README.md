@@ -59,9 +59,15 @@ Given the way PrintVision generates its reports, much careful attention has been
 
 - Built PlayWright functionality for getting data directly from website
 
-### PDF
+### v0.6.0
 
-~~- Future - Build functionality to read data from PDF delivered via email~~
+- Add blacklist feature
+- Add version checking
+- Significant rewrites of all functions for improved readbility and reusability
+
+### v0.7.0 - IN PROGRESS
+
+- Using async to improve application responsiveness
 
 CANCELLED
 
