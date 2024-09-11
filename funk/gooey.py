@@ -1,4 +1,5 @@
 from . import blacklist, spreadsheet, web, readwriteJSON
+import asyncio
 import os, os.path
 import platform
 import tkinter as tk
@@ -71,14 +72,14 @@ def create_gui(window, appVer):
     report_btn = ttk.Button(
         frame1,
         textvariable = htmlstatusVar,
-        command = lambda:web.login(
+        command = lambda:asyncio.run(web.login(
             username.get(),
             password.get(),
             int(hsptl_entry.get()),
             int(clnc_entry.get()),
             html_location_dropdown.get(),
             useBlacklist.get()
-        ),
+        )),
         width = 15
     )
     report_btn.grid(row = 3, column = 0, padx = 10, pady = 5, sticky = 'nw')
