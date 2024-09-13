@@ -1,11 +1,7 @@
-from . import blacklist, gooey
+from . import blacklist, gooey, files
 import csv
 import os, os.path
-import platform
 from tkinter import filedialog as fd
-
-global ope
-ope = platform.system()
 
 def open_file(location, hValue: int, cValue: int, blist: bool, fileVar):
     file_chosen = False
@@ -28,24 +24,10 @@ def open_file(location, hValue: int, cValue: int, blist: bool, fileVar):
             continue
 
 def which_csv(file, location, hValue, cValue, blist):
-    match ope:
-        case "Windows":
-            initDir = "C:/Users/Public"
-            os.chdir(initDir)
-        case "Darwin":
-            initDir = "/Users/ethanwiens/dev/PrintVision-Report"
-            os.chdir(initDir)
-        case "Linux":
-            initDir = "/Users/ethanwiens/dev/PrintVision-Report"
-            os.chdir(initDir)
-
-    if os.path.isfile('report.csv'):
-        os.remove('report.csv')
-        open('report.csv', 'x')
-        print('file created')
+    initDir = files.createFile()
 
     data = readReport(file)
-    writeCSVHeader(data[0])
+    files.writeLine(data[0])
 
     if location == 'Hospital':
         csv_report(data, '10.200', hValue, blist)
@@ -62,42 +44,34 @@ def which_csv(file, location, hValue, cValue, blist):
 def csv_report(data: list, IP: str, value: int, blist: bool):
     row_count = 0
 
-    with open('report.csv', 'a', newline = '') as writefile:
-        spamwriter = csv.writer(
-            writefile,
-            delimiter = ',',
-            quotechar = '|',
-            quoting = csv.QUOTE_MINIMAL,
-        )
+    for row in data:
+        list = [x for x in row]
+        toners = []
+        black = list[6]
+        cyan = list[7]
+        magenta = list[8]
+        yellow = list[9]
 
-        for row in data:
-            list = [x for x in row]
-            toners = []
-            black = list[6]
-            cyan = list[7]
-            magenta = list[8]
-            yellow = list[9]
+        if IP in list[2]:
+            list[6] = csvToner(black, value, toners)
+            list[7] = csvToner(cyan, value, toners)
+            list[8] = csvToner(magenta, value, toners)
+            list[9] = csvToner(yellow, value, toners)
 
-            if IP in list[2]:
-                list[6] = csvToner(black, value, toners)
-                list[7] = csvToner(cyan, value, toners)
-                list[8] = csvToner(magenta, value, toners)
-                list[9] = csvToner(yellow, value, toners)
-
-                if len(toners) > 0:
-                    if blist:
-                        checkedList = blacklist.checkBlacklist(list)
-                        if len(checkedList) > 0:
-                            row_count += 1
-                            spamwriter.writerow(checkedList)
-                        else:
-                            continue
-                    elif not blist:
+            if len(toners) > 0:
+                if blist:
+                    checkedList = blacklist.checkBlacklist(list)
+                    if len(checkedList) > 0:
                         row_count += 1
-                        spamwriter.writerow(list)
+                        files.writeLine(checkedList)
+                    else:
+                        continue
+                elif not blist:
+                    row_count += 1
+                    files.writeLine(list)
 
-            else:
-                continue
+        else:
+            continue
 
     match IP:
         case "10.200":    
@@ -133,13 +107,3 @@ def readReport(file):
         data = [x for x in spamreader]
         return data
     
-def writeCSVHeader(header: list):
-    with open('report.csv', 'a', newline = '') as writefile:
-        spamwriter = csv.writer(
-            writefile,
-            delimiter = ',',
-            quotechar = '|',
-            quoting = csv.QUOTE_MINIMAL,
-        )
-
-        spamwriter.writerow(header)

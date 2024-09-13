@@ -1,14 +1,8 @@
 import asyncio
 from bs4 import BeautifulSoup
-from . import blacklist, readwriteJSON, gooey
-import csv
-import os, os.path
-import platform
+from . import blacklist, readwriteJSON, gooey, files
 from playwright.async_api import async_playwright
 import re
-
-global ope
-ope = platform.system()
 
 async def login(username, password, hValue: int, cValue: int, location, blist):
     pv_login = 'https://loffler.printfleet.com/login.aspx'
@@ -57,19 +51,11 @@ async def login(username, password, hValue: int, cValue: int, location, blist):
     await which_html(soup, hValue, cValue, location, blist)
 
 async def which_html(soup, hValue, cValue, location, blist):
-    match ope:
-        case "Windows":
-            initDir = "C:/Users/Public"
-            os.chdir(initDir)
-        case "Darwin":
-            initDir = "/Users/ethanwiens/Downloads"
-            os.chdir(initDir)
+    initDir = files.createFile()
 
-    if os.path.isfile('report.csv'):
-        os.remove('report.csv')
-        open('report.csv', 'x')
-
-    writeHeader(soup)
+    head = soup.find('thead')
+    header = [x.text for x in head.find_all('th')]
+    files.writeLine(header)
 
     match location:
         case "All":
@@ -85,52 +71,41 @@ async def which_html(soup, hValue, cValue, location, blist):
     gooey.saveDialog(initDir)
 
 async def html_report(soup, value, IP, blist):
-    with open('report.csv', 'a', newline = '') as csvfile:
-        spamwriter = csv.writer(
-            csvfile,
-            delimiter = ',',
-            quotechar = '|',
-            quoting = csv.QUOTE_MINIMAL,
-        )
+    row_count = 0
+    body = soup.find('tbody')
+    table = body.find_all("tr")
 
-        row_count = 0
-        body = soup.find('tbody')
-        table = body.find_all("tr")
+    for x in table:
+        rows = x.find_all('td')
 
-        for x in table:
-            rows = x.find_all('td')
+        line = [y.text.strip('\n').strip('\xa0\n') for y in rows]
+        toners = []
 
-            list = [y.text.strip('\n').strip('\xa0\n') for y in rows]
-            toners = []
+        ip = line[2]
+        black = line[6]
+        cyan = line[7]
+        magenta = line[8]
+        yellow = line[9]
 
-            ip = list[2]
-            black = list[6]
-            cyan = list[7]
-            magenta = list[8]
-            yellow = list[9]
-
-            if IP in ip:
-                list[6] = htmlToner(black, value, toners)
-                list[7] = htmlToner(cyan, value, toners)
-                list[8] = htmlToner(magenta, value, toners)
-                list[9] = htmlToner(yellow, value, toners)
-            else:
-                continue
-            
-            if len(toners) > 0:
-                if blist:
-                    checkedLine = blacklist.checkBlacklist(list)
-
-                    if len(checkedLine) > 1:
-                        row_count += 1
-                        spamwriter.writerow(checkedLine)
-
-                    else:
-                        continue
-
-                elif not blist:
+        if IP in ip:
+            line[6] = htmlToner(black, value, toners)
+            line[7] = htmlToner(cyan, value, toners)
+            line[8] = htmlToner(magenta, value, toners)
+            line[9] = htmlToner(yellow, value, toners)
+        else:
+            continue
+        
+        if len(toners) > 0:
+            if blist:
+                checkedLine = blacklist.checkBlacklist(line)
+                if len(checkedLine) > 1:
                     row_count += 1
-                    spamwriter.writerow(list)
+                    files.writeLine(checkedLine)
+                else:
+                    continue
+            elif not blist:
+                row_count += 1
+                files.writeLine(line)
 
     match IP:
         case "10.200":
@@ -139,19 +114,6 @@ async def html_report(soup, value, IP, blist):
             print(f"CSC: {row_count}")
         case "10.210":
             print(f"Clinics: {row_count}")
-
-def writeHeader(soup):
-    with open('report.csv', 'a', newline = '') as csvfile:
-        spamwriter = csv.writer(
-            csvfile,
-            delimiter = ',',
-            quotechar = '|',
-            quoting = csv.QUOTE_MINIMAL,
-        )
-
-        head = soup.find('thead')
-        header = [x.text for x in head.find_all('th')]
-        spamwriter.writerow(header)
 
 def htmlToner(toner: str, value: int, tonerList: list):
     try:    
@@ -167,3 +129,4 @@ def htmlToner(toner: str, value: int, tonerList: list):
         return ' '
     except TypeError:
         return ' '
+    
