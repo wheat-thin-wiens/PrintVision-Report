@@ -1,5 +1,5 @@
 from .blacklist import saveList, checkBlacklist
-from .files import createFile, writeLine
+from .files import createFile, writeLine, readLine
 from .gooey import create_gui, saveDialog
 from .readwriteJSON import readJSON, writeJSON, removeJSON
 from .spreadsheet import open_file, which_csv, csv_report, readReport
