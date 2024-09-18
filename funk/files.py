@@ -1,3 +1,4 @@
+from . import blacklist
 import asyncio
 import csv
 import os, os.path
@@ -31,3 +32,17 @@ def writeLine(line):
         )
 
         spamwriter.writerow(line)
+
+def readLine(line: list, count: int, blist: bool):
+    if blist:
+        checkedLine = blacklist.checkBlacklist(line)
+        if len(checkedLine) > 1:
+            count += 1
+            writeLine(checkedLine)
+            return count
+        else:
+            return
+    elif not blist:
+        count += 1
+        writeLine(line)
+        return count

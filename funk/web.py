@@ -96,16 +96,9 @@ async def html_report(soup, value, IP, blist):
             continue
         
         if len(toners) > 0:
-            if blist:
-                checkedLine = blacklist.checkBlacklist(line)
-                if len(checkedLine) > 1:
-                    row_count += 1
-                    files.writeLine(checkedLine)
-                else:
-                    continue
-            elif not blist:
-                row_count += 1
-                files.writeLine(line)
+            row_count = files.readLine(line, row_count, blist)
+        else:
+            continue
 
     match IP:
         case "10.200":

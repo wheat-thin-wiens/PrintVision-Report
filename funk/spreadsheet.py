@@ -45,31 +45,23 @@ def csv_report(data: list, IP: str, value: int, blist: bool):
     row_count = 0
 
     for row in data:
-        list = [x for x in row]
+        line = [x for x in row]
         toners = []
-        black = list[6]
-        cyan = list[7]
-        magenta = list[8]
-        yellow = list[9]
+        black = line[6]
+        cyan = line[7]
+        magenta = line[8]
+        yellow = line[9]
 
-        if IP in list[2]:
-            list[6] = csvToner(black, value, toners)
-            list[7] = csvToner(cyan, value, toners)
-            list[8] = csvToner(magenta, value, toners)
-            list[9] = csvToner(yellow, value, toners)
-
-            if len(toners) > 0:
-                if blist:
-                    checkedList = blacklist.checkBlacklist(list)
-                    if len(checkedList) > 0:
-                        row_count += 1
-                        files.writeLine(checkedList)
-                    else:
-                        continue
-                elif not blist:
-                    row_count += 1
-                    files.writeLine(list)
-
+        if IP in line[2]:
+            line[6] = csvToner(black, value, toners)
+            line[7] = csvToner(cyan, value, toners)
+            line[8] = csvToner(magenta, value, toners)
+            line[9] = csvToner(yellow, value, toners)
+        else:
+            continue
+        
+        if len(toners) > 0:
+            row_count = files.readLine(line, row_count, blist)
         else:
             continue
 
