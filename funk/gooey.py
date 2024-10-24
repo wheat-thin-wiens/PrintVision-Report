@@ -1,7 +1,7 @@
 from . import blacklist, spreadsheet, web, readwriteJSON
-import asyncio
 import os, os.path
 import platform
+from threading import Thread
 import tkinter as tk
 from tkinter import filedialog as fd, ttk, messagebox
 
@@ -72,14 +72,14 @@ def create_gui(window, appVer):
     report_btn = ttk.Button(
         frame1,
         textvariable = htmlstatusVar,
-        command = lambda:asyncio.run(web.login(
+        command = lambda:web.login(
             username.get(),
             password.get(),
             int(hsptl_entry.get()),
             int(clnc_entry.get()),
             html_location_dropdown.get(),
             useBlacklist.get()
-        )),
+        ),
         width = 15
     )
     report_btn.grid(row = 3, column = 0, padx = 10, pady = 5, sticky = 'nw')
@@ -230,3 +230,7 @@ def loginError():
     username.set(value = '')
     password.set(value = '')
     messagebox.showerror("Login Error", "You have entered the wrong credentials. Please try again.")
+
+def start_login():
+    t = Thread()
+    t.start()
